@@ -6,11 +6,12 @@ const fs = require('fs');
 // Cấu hình multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'src/uploads/');
+    // LƯU VÀO DISK CHÍNH CHỦ RENDER – KHÔNG BAO GIỜ MẤT
+    cb(null, '/opt/render/project/src/event-portal-backend/uploads');
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'org-' + uniqueSuffix + path.extname(file.originalname));
+    const unique = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'org-' + unique + path.extname(file.originalname));
   }
 });
 
@@ -110,4 +111,5 @@ exports.delete = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+
 };
