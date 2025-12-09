@@ -1,12 +1,21 @@
 // src/routes/eventRoutes.js
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/eventController');
+const eventController = require('../controllers/eventController');
 
-router.get('/', ctrl.getAll);
-router.post('/', ctrl.create);
-router.put('/:id', ctrl.update);
-router.delete('/:id', ctrl.delete);
-router.patch('/:id/status', ctrl.changeStatus);
+// GET tất cả sự kiện
+router.get('/', eventController.getAll);
+
+// Tạo sự kiện mới
+router.post('/', eventController.create);
+
+// Sửa sự kiện
+router.put('/:id', eventController.update);
+
+// Xóa sự kiện
+router.delete('/:id', eventController.delete);
+
+// Duyệt / Từ chối (pending → approved)
+router.patch('/:id/status', eventController.changeStatus);
 
 module.exports = router;
