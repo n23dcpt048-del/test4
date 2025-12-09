@@ -30,108 +30,23 @@
      <div class="header-container">
        <div class="title-section">
          <h1>Tổ chức</h1>
-          <div class="sub">Tạo và quản lý các tổ chức tổ chức tại Viện</div>
+          <div class="sub">Tạo và quản lý các tổ chức tổ chức sự kiện</div>
         </div>
          <button class="add-org-btn" id="addOrgBtn">+ Thêm tổ chức</button>
         </div>
 
     <!-- Organization Cards -->
-    <div class="cards">
-    <!-- Card 1 -->
-     <div class="card" data-id="1">
-      <div class="tieude">
-        <div class="avatar">
-          <img src="picture/lcdcndpt.jpg" alt="LCDCNDPT">
-        </div>
-      <div>
-        <h3>LCDCNDPT</h3>
-        </div>
-     </div>
-        <p>LCĐ Công Nghệ Đa Phương Tiện</p>
-        <a href="mailto:lcdcndpt@student.ptithcm.edu.vn" class="email">lcdcndpt@student.ptithcm.edu.vn</a>
-        <a href="https://www.facebook.com/multimediaptithcm" class="fanpage" target="_blank">https://www.facebook.com/multimediaptithcm</a>
-        <div class="actions">
-        <button class="edit" data-id="1">Sửa</button>
-        <button class="delete" data-id="1">Xóa</button>
-      </div>
-    </div>
+   <!-- Organization Cards - SẼ ĐƯỢC TẢI TỪ BACKEND -->
+<div class="cards" id="orgCardsContainer">
+  <!-- Các card sẽ được JS thêm vào đây -->
+</div>
 
-    <!-- Card 2 -->
-     <div class="card" data-id="2">
-      <div class="tieude">
-        <div class="avatar">
-          <img src="picture/csv.jpg" alt="csv">
-        </div>
-      <div>
-        <h3>CSV</h3>
-        </div>
-     </div>
-        <p>Chương Trình CHÀO SINH VIÊN - PTIT HCM</p>
-        <a href="mailto:doanthanhnien.ptithcm@gmail.com" class="email">doanthanhnien.ptithcm@gmail.com</a>
-        <a href="https://www.facebook.com/chaosinhvienptithcm" class="fanpage" target="_blank">https://www.facebook.com/chaosinhvienptithcm</a>
-        <div class="actions">
-        <button class="edit" data-id="2">Sửa</button>
-        <button class="delete" data-id="2">Xóa</button>
-      </div>
-    </div>
-
-    <!-- Card 3 -->
-     <div class="card" data-id="3">
-      <div class="tieude">
-        <div class="avatar">
-          <img src="picture/marketing.jpg" alt="LCĐ Marketing">
-        </div>
-      <div>
-        <h3>LCĐ Marketing</h3>
-        </div>
-     </div>
-        <p>LCĐ Marketing - PTIT HCM</p>
-        <a href="mailto:lcdmarketing@student.ptithcm.edu.vn" class="email">lcdmarketing@student.ptithcm.edu.vn</a>
-        <a href="https://www.facebook.com/lcdmarketing.ptithcm" class="fanpage" target="_blank">https://www.facebook.com/lcdmarketing.ptithcm</a>
-        <div class="actions">
-        <button class="edit" data-id="3">Sửa</button>
-        <button class="delete" data-id="3">Xóa</button>
-      </div>
-    </div>
-
-    <!-- Card 4 -->
-     <div class="card" data-id="4">
-      <div class="tieude">
-        <div class="avatar">
-          <img src="picture/cmc.jpg" alt="cmc">
-        </div>
-      <div>
-        <h3>CLB C.MC</h3>
-        </div>
-     </div>
-        <p>CLB Truyền Thông C.MC</p>
-        <a href="mailto:clb.truyenthongcmc@student.ptithcm.edu.vn" class="email">clb.truyenthongcmc@student.ptithcm.edu.vn</a>
-        <a href="https://www.facebook.com/CLBCMC" class="fanpage" target="_blank">https://www.facebook.com/CLBCMC</a>
-        <div class="actions">
-        <button class="edit" data-id="4">Sửa</button>
-        <button class="delete" data-id="4">Xóa</button>
-      </div>
-    </div>
-
-    <!-- Card 5 -->
-     <div class="card" data-id="5">
-      <div class="tieude">
-        <div class="avatar">
-          <img src="picture/itmc.jpg" alt="itmc">
-        </div>
-      <div>
-        <h3>CLB ITMC</h3>
-        </div>
-     </div>
-        <p>Information Technology Multimedia Club</p>
-        <a href="mailto:clb.itmc@student.ptithcm.edu.vn" class="email">clb.itmc@student.ptithcm.edu.vn</a>
-        <a href="https://www.facebook.com/it.multimedia.club" class="fanpage" target="_blank">https://www.facebook.com/it.multimedia.club</a>
-        <div class="actions">
-        <button class="edit" data-id="5">Sửa</button>
-        <button class="delete" data-id="5">Xóa</button>
-      </div>
-    </div>
-    </div>
+<!-- Khi chưa có tổ chức nào -->
+<div id="emptyState" style="display: none; text-align: center; padding: 60px 20px; color: #666;">
+  <div style="font-size: 80px; margin-bottom: 20px;">No organizations</div>
+  <h3>Chưa có tổ chức nào</h3>
+  <p>Nhấn nút "+ Thêm tổ chức" để bắt đầu</p>
+</div>
 
     <!-- Modal for Add/Edit Organization -->
     <div class="modal-overlay" id="orgModal">
