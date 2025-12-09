@@ -1,4 +1,4 @@
-// src/models/Event.js
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
@@ -21,4 +21,5 @@ const Event = sequelize.define('Event', {
 }, { timestamps: true });
 
 module.exports = Event;
+
 
