@@ -1,5 +1,5 @@
 // ==================== KẾT NỐI BACKEND ====================
-const API_BASE = 'https://test4-7cop.onrender.com/api/events'; // Backend Render của bạn
+const API_BASE = 'https://test4-7cop.onrender.com'; // Backend Render của bạn
 let organizations = []; // Lưu danh sách tổ chức từ server
 
 // Load tổ chức thật từ backend để điền vào dropdown
@@ -1077,3 +1077,4 @@ if (!backToStep1Btn) {
         step1.classList.add('active');
     });
 }
+
