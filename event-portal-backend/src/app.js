@@ -21,85 +21,86 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Phục vụ file tĩnh
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/picture', express.static(path.join(__dirname, '../picture'))); // backup nếu cần
+// Phục vụ file tĩnh - FIX: Serve /picture từ root repo (thư mục picture ở ../picture)
+app.use('/picture', express.static(path.join(__dirname, '../picture'))); // ← DÒNG QUAN TRỌNG NHẤT
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Backup nếu có uploads trong backend
 
 // Routes
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/ugc', ugcRoutes);
 
-// Trang test
+// Test page với link ảnh
 app.get('/', (req, res) => {
-  res.send('<h1>Backend Event Portal + UGC đang chạy!</h1>');
+  res.send(`
+    <h1>Backend Event Portal + UGC OK!</h1>
+    <p>Test ảnh từ /picture (root): <img src="/picture/recapcsv.jpg" alt="Test" width="200"></p>
+    <p>API UGC: <a href="/api/ugc/pending">/api/ugc/pending</a></p>
+  `);
 });
 
 const PORT = process.env.PORT || 5000;
 
-// KHỞI ĐỘNG SERVER + SEED DATA
+// Start server + FORCE RESEED với /picture
 async function startServer() {
   try {
     await sequelize.authenticate();
-    console.log('Kết nối PostgreSQL thành công');
+    console.log('✅ Kết nối PostgreSQL OK');
 
     await sequelize.sync({ alter: true });
-    console.log('Đồng bộ bảng xong');
+    console.log('✅ Đồng bộ bảng OK');
 
-    // Seed UGC mẫu – ĐÃ SỬA ĐƯỜNG DẪN ẢNH DÙNG /uploads
-    const ugcCount = await Ugc.count();
-    if (ugcCount === 0) {
-      await Ugc.bulkCreate([
-        {
-          title: 'RECAP CSV 2025',
-          author: 'Nguyễn Văn Dương',
-          timestamp: '20:00:00 16/12/2025',
-          imageUrl: '/uploads/recapcsv.jpg',
-          status: 'pending'
-        },
-        {
-          title: 'RECAP HCMPTIT ICPC 2025',
-          author: 'Chu Văn Phong',
-          timestamp: '21:34:54 9/12/2025',
-          imageUrl: '/uploads/recapitmc.jpg',
-          status: 'pending'
-        },
-        {
-          title: 'RECAP ASTEES COLLECTION REVEAL 2025',
-          author: 'Vương Sơn Hà',
-          timestamp: '22:30:00 17/12/2025',
-          imageUrl: '/uploads/recapazone.jpg',
-          status: 'pending'
-        },
-        {
-          title: 'RECAP CASTING THE ASTRO - THE INFINITY GEN',
-          author: 'Dương Minh Thoại',
-          timestamp: '20:34:54 5/12/2025',
-          imageUrl: '/uploads/recapcmc.jpg',
-          status: 'approved'
-        },
-        {
-          title: 'RECAP - HCM PTIT MULTIMEDIA 2025',
-          author: 'Lê Nhất Duy',
-          timestamp: '23:34:54 7/12/2025',
-          imageUrl: '/uploads/recaplcd.jpg',
-          status: 'approved'
-        }
-      ]);
-      console.log('Đã tạo 5 bài UGC mẫu (ảnh từ /uploads)');
-    } else {
-      console.log(`Đã có ${ugcCount} bài UGC, bỏ qua seed`);
-    }
+    // FORCE RESEED UGC - Xóa cũ và tạo mới với /picture từ root
+    console.log('🔄 Force reseed UGC với ảnh từ /picture (root)...');
+    await Ugc.destroy({ where: {} }); // Xóa hết cũ (xóa dòng này sau test OK)
+    await Ugc.bulkCreate([
+      {
+        title: 'RECAP CSV 2025',
+        author: 'Nguyễn Văn Dương',
+        timestamp: '20:00:00 16/12/2025',
+        imageUrl: '/picture/recapcsv.jpg',  // ← ĐÚNG: /picture từ root
+        status: 'pending'
+      },
+      {
+        title: 'RECAP HCMPTIT ICPC 2025',
+        author: 'Chu Văn Phong',
+        timestamp: '21:34:54 9/12/2025',
+        imageUrl: '/picture/recapitmc.jpg',
+        status: 'pending'
+      },
+      {
+        title: 'RECAP ASTEES COLLECTION REVEAL 2025',
+        author: 'Vương Sơn Hà',
+        timestamp: '22:30:00 17/12/2025',
+        imageUrl: '/picture/recapazone.jpg',
+        status: 'pending'
+      },
+      {
+        title: 'RECAP CASTING THE ASTRO - THE INFINITY GEN',
+        author: 'Dương Minh Thoại',
+        timestamp: '20:34:54 5/12/2025',
+        imageUrl: '/picture/recapcmc.jpg',
+        status: 'approved'
+      },
+      {
+        title: 'RECAP - HCM PTIT MULTIMEDIA 2025',
+        author: 'Lê Nhất Duy',
+        timestamp: '23:34:54 7/12/2025',
+        imageUrl: '/picture/recaplcd.jpg',
+        status: 'approved'
+      }
+    ]);
+    console.log('✅ Reseed 5 UGC với /picture OK');
 
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server chạy tại: https://test4-7cop.onrender.com`);
+      console.log(`🚀 Server: https://test4-7cop.onrender.com`);
+      console.log(`📸 Test ảnh: https://test4-7cop.onrender.com/picture/recapcsv.jpg`);
     });
 
   } catch (error) {
-    console.error('Lỗi khởi động server:', error);
+    console.error('❌ Lỗi server:', error);
     process.exit(1);
   }
 }
 
-// Chạy server
 startServer();
