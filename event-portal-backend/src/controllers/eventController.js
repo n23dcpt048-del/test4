@@ -1,97 +1,44 @@
-// src/controllers/eventController.js
 const Event = require('../models/Event');
-const Organization = require('../models/Organization');
-const { v2: cloudinary } = require('cloudinary');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const multer = require('multer');
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: 'event-portal/events',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-  },
-});
-const upload = multer({ storage });
-
-// GET all events (phân loại theo status)
-exports.getAll = async (req, res) => {
+exports.getByStatus = async (req, res) => {
   try {
-    const events = await Event.findAll({
-      include: [{ model: Organization, attributes: ['name'] }],
-      order: [['createdAt', 'DESC']]
-    });
+    const { status } = req.params;
+    const events = await Event.findAll({ where: { status } });
     res.json(events);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-// CREATE
-exports.create = [
-  upload.single('coverImage'),
-  async (req, res) => {
-    try {
-      const coverImage = req.file ? req.file.path : null;
-      const event = await Event.create({
-        ...req.body,
-        coverImage,
-        organizationId: parseInt(req.body.organizationId),
-        channels: req.body.channels ? JSON.parse(req.body.channels) : ['web']
-      });
-      const result = await Event.findByPk(event.id, {
-        include: [{ model: Organization, attributes: ['name'] }]
-      });
-      res.status(201).json(result);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
-  }
-];
-
-// UPDATE
-exports.update = [
-  upload.single('coverImage'),
-  async (req, res) => {
-    try {
-      const event = await Event.findByPk(req.params.id);
-      if (!event) return res.status(404).json({ error: 'Không tìm thấy' });
-      
-      const coverImage = req.file ? req.file.path : event.coverImage;
-      await event.update({
-        ...req.body,
-        coverImage,
-        organizationId: parseInt(req.body.organizationId),
-        channels: req.body.channels ? JSON.parse(req.body.channels) : event.channels
-      });
-      const updated = await Event.findByPk(event.id, {
-        include: [{ model: Organization, attributes: ['name'] }]
-      });
-      res.json(updated);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
-  }
-];
-
-// DELETE
-exports.delete = async (req, res) => {
+exports.updateStatus = async (req, res) => {
   try {
-    const event = await Event.findByPk(req.params.id);
-    if (!event) return res.status(404).json({ error: 'Không tìm thấy' });
-    if (event.coverImage && event.coverImage.includes('cloudinary')) {
-      const publicId = event.coverImage.split('/').slice(-2).join('/').split('.')[0];
-      await cloudinary.uploader.destroy(publicId);
-    }
-    await event.destroy();
-    res.json({ message: 'Xóa thành công' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const { id } = req.params;
+    const { status } = req.body;
+    const event = await Event.findByPk(id);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+    event.status = status;
+    await event.save();
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Giữ logic create/update nếu có
+exports.createEvent = async (req, res) => {
+  try {
+    const event = await Event.create(req.body);
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.findAll();
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
