@@ -1,4 +1,4 @@
-// routes/ugcRoutes.js - THÊM ROUTE POST CHO UPDATE STATUS
+
 const express = require('express');
 const router = express.Router();
 const Ugc = require('../models/Ugc');
