@@ -8,7 +8,7 @@ const Event = sequelize.define('Event', {
 
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
 
-  name: { type: DataTypes.STRING, allowNull: true },
+  name: { type: DataTypes.STRING, allowNull: false },
 
   description: { type: DataTypes.TEXT },
 
@@ -39,5 +39,6 @@ const Event = sequelize.define('Event', {
 }, { timestamps: true });
 
 module.exports = Event;
+
 
 
