@@ -61,47 +61,48 @@ async function startServer() {
     await sequelize.sync({ alter: true }); // Tạo bảng nếu chưa có, sửa nếu thay đổi
     console.log('Đồng bộ bảng xong');
 
-    // Seed 5 bài UGC mẫu (chỉ chạy lần đầu)
-    const ugcCount = await Ugc.count();
-    if (ugcCount === 0) {
-      await Ugc.bulkCreate([
-        {
-          title: 'RECAP CSV 2025',
-          author: 'Nguyễn Văn Dương',
-          timestamp: '20:00:00 16/12/2025',
-          imageUrl: '/picture/recapcsv.jpg',
-          status: 'pending'
-        },
-        {
-          title: 'RECAP HCMPTIT ICPC 2025',
-          author: 'Chu Văn Phong',
-          timestamp: '21:34:54 9/12/2025',
-          imageUrl: '/picture/recapitmc.jpg',
-          status: 'pending'
-        },
-        {
-          title: 'RECAP ASTEES COLLECTION REVEAL 2025',
-          author: 'Vương Sơn Hà',
-          timestamp: '22:30:00 17/12/2025',
-          imageUrl: '/picture/recapazone.jpg',
-          status: 'pending'
-        },
-        {
-          title: 'RECAP CASTING THE ASTRO - THE INFINITY GEN',
-          author: 'Dương Minh Thoại',
-          timestamp: '20:34:54 5/12/2025',
-          imageUrl: '/picture/recapcmc.jpg',
-          status: 'approved'
-        },
-        {
-          title: 'RECAP - HCM PTIT MULTIMEDIA 2025',
-          author: 'Lê Nhất Duy',
-          timestamp: '23:34:54 7/12/2025',
-          imageUrl: '/picture/recaplcd.jpg',
-          status: 'approved'
-        }
-      ]);
-      console.log('Đã tạo 5 bài UGC mẫu');
+// Seed 5 bài UGC mẫu – ĐÃ SỬA ĐƯỜNG DẪN ẢNH
+const ugcCount = await Ugc.count();
+if (ugcCount === 0) {
+  await Ugc.bulkCreate([
+    {
+      title: 'RECAP CSV 2025',
+      author: 'Nguyễn Văn Dương',
+      timestamp: '20:00:00 16/12/2025',
+      imageUrl: '/uploads/recapcsv.jpg',
+      status: 'pending'
+    },
+    {
+      title: 'RECAP HCMPTIT ICPC 2025',
+      author: 'Chu Văn Phong',
+      timestamp: '21:34:54 9/12/2025',
+      imageUrl: '/uploads/recapitmc.jpg',
+      status: 'pending'
+    },
+    {
+      title: 'RECAP ASTEES COLLECTION REVEAL 2025',
+      author: 'Vương Sơn Hà',
+      timestamp: '22:30:00 17/12/2025',
+      imageUrl: '/uploads/recapazone.jpg',
+      status: 'pending'
+    },
+    {
+      title: 'RECAP CASTING THE ASTRO - THE INFINITY GEN',
+      author: 'Dương Minh Thoại',
+      timestamp: '20:34:54 5/12/2025',
+      imageUrl: '/uploads/recapcmc.jpg',
+      status: 'approved'
+    },
+    {
+      title: 'RECAP - HCM PTIT MULTIMEDIA 2025',
+      author: 'Lê Nhất Duy',
+      timestamp: '23:34:54 7/12/2025',
+      imageUrl: '/uploads/recaplcd.jpg',
+      status: 'approved'
+    }
+  ]);
+  console.log('Đã tạo 5 bài UGC mẫu với ảnh từ /uploads');
+}
     } else {
       console.log(`Đã có ${ugcCount} bài UGC, bỏ qua seed`);
     }
@@ -118,3 +119,4 @@ async function startServer() {
 }
 
 startServer();
+
