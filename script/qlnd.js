@@ -1,5 +1,5 @@
 // script/qlnd.js - KẾT NỐI BACKEND THẬT (PostgreSQL + Render)
-const API_BASE = 'https://test4-7cop.onrender.com'; // Thay bằng URL Render của bạn nếu khác
+const API_BASE = 'https://test4-7cop.onrender.com/api/ugc'; // Thay bằng URL Render của bạn nếu khác
 
 // Notification (giữ nguyên)
 function createNotificationElement() {
@@ -168,4 +168,5 @@ document.querySelector('.logout-btn')?.addEventListener('click', () => {
   localStorage.clear();
   window.location.href = 'index.html';
 });
+
 
