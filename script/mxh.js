@@ -1,5 +1,5 @@
-// script/mxh.js - 100% sạch, chỉ gọi API thật
-const API_URL = 'https://test4-7cop.onrender.com';
+// script/mxh.js - CHỈ SỬA 1 DÒNG API_URL LÀ CHẠY NGON NGAY
+const API_URL = 'https://test4-7cop.onrender.com/api/social-medias';
 
 document.addEventListener('DOMContentLoaded', async function () {
   const openModalBtn = document.getElementById('openModalBtn');
@@ -47,15 +47,17 @@ document.addEventListener('DOMContentLoaded', async function () {
   async function loadSocialMedias() {
     try {
       const res = await fetch(API_URL);
+      if (!res.ok) throw new Error('Lỗi server');
       const list = await res.json();
       const container = document.querySelector('.cards');
-      container.innerHTML = ''; // sạch trơn
+      container.innerHTML = '';
       list.forEach(item => createCard(item));
       if (list.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#666; grid-column: 1/-1;">Chưa có mạng xã hội nào. Hãy thêm mới!</p>';
+        container.innerHTML = '<p style="text-align:center; color:#666; grid-column:1/-1;">Chưa có mạng xã hội nào. Hãy thêm mới!</p>';
       }
     } catch (err) {
-      showNotification('Không tải được dữ liệu!', 'error');
+      showNotification('Không tải được dữ liệu! Kiểm tra console (F12)', 'error');
+      console.error(err);
     }
   }
 
@@ -76,7 +78,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     `;
     document.querySelector('.cards').appendChild(card);
 
-    // Gắn sự kiện
     card.querySelector('.edit').onclick = () => openEditModal(data);
     card.querySelector('.delete').onclick = () => {
       currentCardToDelete = card;
@@ -101,19 +102,25 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const link = linkInput.startsWith('http') ? linkInput : `https://${linkInput}`;
 
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, link })
-    });
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, link })
+      });
 
-    if (res.ok) {
-      const newItem = await res.json();
-      createCard(newItem);
-      showNotification(`Đã thêm "${name}"`, 'success');
-      modalOverlay.classList.remove('active');
-      createOrgForm.reset();
-    } else showNotification('Lỗi khi thêm!', 'error');
+      if (res.ok) {
+        const newItem = await res.json();
+        createCard(newItem);
+        showNotification(`Đã thêm "${name}"`, 'success');
+        modalOverlay.classList.remove('active');
+        createOrgForm.reset();
+      } else {
+        throw new Error('Lỗi server');
+      }
+    } catch (err) {
+      showNotification('Lỗi khi thêm!', 'error');
+    }
   };
 
   // ==================== SỬA ====================
@@ -124,26 +131,37 @@ document.addEventListener('DOMContentLoaded', async function () {
     const linkInput = document.getElementById('editOrgLink').value.trim();
     const link = linkInput.startsWith('http') ? linkInput : `https://${linkInput}`;
 
-    const res = await fetch(`${API_URL}/${id}`, {
+    fetch(`${API_URL}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, link })
-    });
-
-    if (res.ok) {
-      loadSocialMedias(); // reload lại cho nhanh
+    })
+    .then(res => {
+      if (res.ok) return res.json();
+      throw new Error();
+    })
+    .then(() => {
+      loadSocialMedias();
       showNotification('Cập nhật thành công!', 'success');
       editModalOverlay.classList.remove('active');
-    } else showNotification('Lỗi khi sửa!', 'error');
+    })
+    .catch(() => showNotification('Lỗi khi sửa!', 'error'));
   };
 
   // ==================== XÓA ====================
   confirmBtn.onclick = async () => {
     if (!currentCardToDelete) return;
     const id = currentCardToDelete.querySelector('.delete').dataset.id;
-    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-    currentCardToDelete.remove();
-    showNotification('Đã xóa!', 'success');
+
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        currentCardToDelete.remove();
+        showNotification('Đã xóa thành công!', 'success');
+      }
+    } catch {
+      showNotification('Lỗi khi xóa!', 'error');
+    }
     confirmModalOverlay.classList.remove('active');
     currentCardToDelete = null;
   };
@@ -163,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   openModalBtn.onclick = () => modalOverlay.classList.add('active');
 
   // ==================== KHỞI ĐỘNG ====================
-  loadSocialMedias(); // lần đầu trống hoàn toàn
+  loadSocialMedias();
 });
 
 // LOGOUT
