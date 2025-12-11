@@ -1,4 +1,4 @@
-// routes/ugcRoutes.js
+// routes/ugcRoutes.js hgihih
 const express = require('express');
 const router = express.Router();
 const ugcController = require('../controllers/ugcController');
