@@ -21,91 +21,100 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Phục vụ file tĩnh - FIX: Serve /picture từ THƯ MỤC BACKEND (không dùng ../)
-app.use('/picture', express.static(path.join(__dirname, 'picture'))); // ← QUAN TRỌNG: picture trong backend
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Backup
+// Serve ảnh tĩnh (giữ nguyên)
+app.use('/picture', express.static(path.join(__dirname, 'picture')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/ugc', ugcRoutes);
 
-// Test page với ảnh (để check serve)
+// Trang test
 app.get('/', (req, res) => {
   res.send(`
     <h1>Backend Event Portal + UGC OK!</h1>
-    <p>Test ảnh từ /picture (backend): <img src="/picture/recapcsv.jpg" alt="Test" width="200" onerror="this.src='https://via.placeholder.com/200?text=No+Image'"></p>
-    <p><a href="/api/ugc/pending">Test API UGC</a></p>
+    <p><img src="https://i.postimg.cc/h4QN9B0V/recapcsv.jpg" width="300"></p>
+    <p><a href="/api/ugc/pending">Xem UGC chờ duyệt</a> | <a href="/api/ugc/approved">Xem UGC đã duyệt</a></p>
   `);
 });
 
 const PORT = process.env.PORT || 5000;
 
-// Start server + FORCE RESEED đầy đủ 5 bài
+// === KHỞI ĐỘNG SERVER – ĐÃ FIX CHO RENDER ===
 async function startServer() {
   try {
     await sequelize.authenticate();
-    console.log('✅ Kết nối PostgreSQL OK');
+    console.log('Kết nối PostgreSQL OK');
 
-    await sequelize.sync({ alter: true });
-    console.log('✅ Đồng bộ bảng OK');
+    // QUAN TRỌNG: Không dùng alter: true trên Render → đổi thành force: false
+    await sequelize.sync({ force: false });
+    console.log('Đồng bộ bảng OK');
 
-    // === SEED UGC MẪU – DÙNG LINK ẢNH ONLINE (KHÔNG CẦN THƯ MỤC ẢNH NỮA) ===
-const ugcCount = await Ugc.count();
-if (ugcCount === 0 || true) { // || true để force reseed 1 lần
-  console.log('Reseed UGC với ảnh online...');
-  await Ugc.destroy({ where: {} }); // Xóa data cũ
-
-  await Ugc.bulkCreate([
-    {
-      title: 'RECAP CSV 2025',
-      author: 'Nguyễn Văn Dương',
-      timestamp: '20:00:00 16/12/2025',
-      imageUrl: 'https://i.postimg.cc/h4QN9B0V/recapcsv.jpg', // ảnh thật, đẹp
-      status: 'pending'
-    },
-    {
-      title: 'RECAP HCMPTIT ICPC 2025',
-      author: 'Chu Văn Phong',
-      timestamp: '21:34:54 9/12/2025',
-      imageUrl: 'https://i.postimg.cc/pXkXwG24/recapitmc.jpg',
-      status: 'pending'
-    },
-    {
-      title: 'RECAP ASTEES COLLECTION REVEAL 2025',
-      author: 'Vương Sơn Hà',
-      timestamp: '22:30:00 17/12/2025',
-      imageUrl: 'https://i.postimg.cc/526JjN3B/recapazone.jpg',
-      status: 'pending'
-    },
-    {
-      title: 'RECAP CASTING THE ASTRO - THE INFINITY GEN',
-      author: 'Dương Minh Thoại',
-      timestamp: '20:34:54 5/12/2025',
-      imageUrl: 'https://i.postimg.cc/Xv15nNny/recapcmc.jpg',
-      status: 'approved'
-    },
-    {
-      title: 'RECAP - HCM PTIT MULTIMEDIA 2025',
-      author: 'Lê Nhất Duy',
-      timestamp: '23:34:54 7/12/2025',
-      imageUrl: 'https://i.postimg.cc/K8RFdmpt/recaplcd.jpg',
-      status: 'approved'
+    // Seed dữ liệu mẫu chỉ 1 lần duy nhất
+    const ugcCount = await Ugc.count();
+    if (ugcCount === 0) {
+      console.log('Đang seed 5 bài UGC mẫu (ảnh online)...');
+      await Ugc.bulkCreate([
+        {
+          title: 'RECAP CSV 2025',
+          author: 'Nguyễn Văn Dương',
+          timestamp: '20:00:00 16/12/2025',
+          imageUrl: 'https://i.postimg.cc/h4QN9B0V/recapcsv.jpg',
+          status: 'pending'
+        },
+        {
+          title: 'RECAP HCMPTIT ICPC 2025',
+          author: 'Chu Văn Phong',
+          timestamp: '21:34:54 9/12/2025',
+          imageUrl: 'https://i.postimg.cc/pXkXwG24/recapitmc.jpg',
+          status: 'pending'
+        },
+        {
+          title: 'RECAP ASTEES COLLECTION REVEAL 2025',
+          author: 'Vương Sơn Hà',
+          timestamp: '22:30:00 17/12/2025',
+          imageUrl: 'https://i.postimg.cc/526JjN3B/recapazone.jpg',
+          status: 'pending'
+        },
+        {
+          title: 'RECAP CASTING THE ASTRO - THE INFINITY GEN',
+          author: 'Dương Minh Thoại',
+          timestamp: '20:34:54 5/12/2025',
+          imageUrl: 'https://i.postimg.cc/Xv15nNny/recapcmc.jpg',
+          status: 'approved'
+        },
+        {
+          title: 'RECAP - HCM PTIT MULTIMEDIA 2025',
+          author: 'Lê Nhất Duy',
+          timestamp: '23:34:54 7/12/2025',
+          imageUrl: 'https://i.postimg.cc/K8RFdmpt/recaplcd.jpg',
+          status: 'approved'
+        }
+      ]);
+      console.log('ĐÃ SEED 5 BÀI UGC THÀNH CÔNG!');
     }
-  ]);
-  console.log('ĐÃ RESEED 5 BÀI UGC VỚI ẢNH ONLINE – ẢNH SẼ HIỆN NGAY!');
-}
 
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server: https://test4-7cop.onrender.com`);
-      console.log(`📸 Test ảnh: https://test4-7cop.onrender.com/picture/recapcsv.jpg`);
+      console.log(`Server đang chạy: https://test4-7cop.onrender.com`);
+      console.log(`Test API: https://test4-7cop.onrender.com/api/ugc/pending`);
     });
 
   } catch (error) {
-    console.error('❌ Lỗi server:', error);
-    process.exit(1);
+    console.error('Lỗi khởi động server:', error.message);
+
+    // Không để server chết hoàn toàn
+    app.use((req, res) => {
+      res.status(500).json({
+        error: 'Server lỗi khởi động',
+        message: error.message
+      });
+    });
+
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log('Server chạy ở chế độ lỗi – chỉ để debug');
+    });
   }
 }
 
 startServer();
-
