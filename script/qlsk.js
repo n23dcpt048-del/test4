@@ -2,11 +2,14 @@
 const API_BASE = 'https://test4-7cop.onrender.com';
 let organizations = [];
 
-// Load danh sách tổ chức từ backend
+// Load tổ chức từ backend (thật 100%)
 async function loadOrganizations() {
     try {
         const res = await fetch(`${API_BASE}/api/organizations`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+            console.error('Lỗi HTTP khi load tổ chức:', res.status);
+            return;
+        }
         organizations = await res.json();
 
         const selects = [
@@ -25,19 +28,21 @@ async function loadOrganizations() {
             }
         });
     } catch (err) {
-        console.error('Lỗi load tổ chức:', err);
-        alert('Không thể tải danh sách tổ chức. Kiểm tra console (F12).');
+        console.error('Lỗi kết nối load tổ chức:', err);
     }
 }
 
-// Load tất cả sự kiện từ backend và render
+// Load events từ backend (không alert nếu rỗng)
 async function loadEvents() {
     try {
         const res = await fetch(`${API_BASE}/api/events`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+            console.error('Lỗi HTTP khi load events:', res.status);
+            return;
+        }
         const events = await res.json();
 
-        // Xóa hết card cũ
+        // Xóa card cũ
         document.querySelectorAll('.event-card').forEach(wrapper => wrapper.innerHTML = '');
 
         events.forEach(event => {
@@ -51,14 +56,12 @@ async function loadEvents() {
 
         updateTabBadges();
         updateEventStatusBadges();
-        checkEmptyTab();
     } catch (err) {
-        console.error('Lỗi load events:', err);
-        alert('Không kết nối được backend. Mở Console (F12) để xem lỗi chi tiết.');
+        console.error('Lỗi kết nối load events:', err);
     }
 }
 
-// Render một card sự kiện
+// Render card sự kiện từ data thật
 function renderEventCard(event, tabId) {
     const wrapper = document.querySelector(`#${tabId} .event-card`);
     if (!wrapper) return;
@@ -78,7 +81,7 @@ function renderEventCard(event, tabId) {
         return `${hh}:${mm} ${dd}/${MM}/${yyyy}`;
     };
 
-    const orgName = event.Organization ? event.Organization.name : '-----';
+    const orgName = event.Organization?.name || '-----';
 
     const channelsHtml = event.channels && event.channels.length > 0
         ? `<div class="displaymxh">
@@ -126,14 +129,16 @@ function renderEventCard(event, tabId) {
     wrapper.appendChild(card);
 }
 
-// ==================== HÀM BACKEND ====================
+// ==================== HÀM THAO TÁC BACKEND ====================
 async function createEvent() {
-    const requiredFields = ['eventName', 'eventStartTime', 'eventEndTime', 'registrationDeadline', 'eventLocation', 'registrationLink'];
-    for (const id of requiredFields) {
-        if (!document.getElementById(id).value.trim()) {
-            alert('Vui lòng điền đầy đủ các trường bắt buộc!');
-            return;
-        }
+    const required = ['eventName', 'eventStartTime', 'eventEndTime', 'registrationDeadline', 'eventLocation', 'registrationLink'];
+    let valid = true;
+    required.forEach(id => {
+        if (!document.getElementById(id).value.trim()) valid = false;
+    });
+    if (!valid) {
+        alert('Vui lòng điền đầy đủ các trường bắt buộc!');
+        return;
     }
 
     const formData = new FormData();
@@ -149,19 +154,23 @@ async function createEvent() {
     const channels = Array.from(document.querySelectorAll('input[name="socialChannels"]:checked')).map(cb => cb.value);
     formData.append('channels', JSON.stringify(channels));
 
-    const file = document.getElementById('eventImage').files[0];
-    if (file) formData.append('image', file);
+    const fileInput = document.getElementById('eventImage');
+    if (fileInput.files[0]) formData.append('image', fileInput.files[0]);
 
     try {
-        const res = await fetch(`${API_BASE}/api/events`, { method: 'POST', body: formData });
+        const res = await fetch(`${API_BASE}/api/events`, {
+            method: 'POST',
+            body: formData
+        });
         if (!res.ok) {
-            const text = await res.text();
-            throw new Error(text || 'Lỗi server');
+            const errText = await res.text();
+            throw new Error(errText || 'Lỗi server');
         }
         alert('Tạo sự kiện thành công!');
         closeCreateModal();
         await loadEvents();
     } catch (err) {
+        console.error(err);
         alert('Lỗi tạo sự kiện: ' + err.message);
     }
 }
@@ -177,11 +186,14 @@ async function updateEvent(id) {
     formData.append('registrationLink', document.getElementById('editRegistrationLink').value.trim());
     formData.append('organizationId', document.getElementById('editEventOrganization').value);
 
-    const file = document.getElementById('editEventImage').files[0];
-    if (file) formData.append('image', file);
+    const fileInput = document.getElementById('editEventImage');
+    if (fileInput.files[0]) formData.append('image', fileInput.files[0]);
 
     try {
-        const res = await fetch(`${API_BASE}/api/events/${id}`, { method: 'PUT', body: formData });
+        const res = await fetch(`${API_BASE}/api/events/${id}`, {
+            method: 'PUT',
+            body: formData
+        });
         if (!res.ok) throw new Error(await res.text());
         alert('Cập nhật thành công!');
         closeEditModal();
@@ -192,7 +204,7 @@ async function updateEvent(id) {
 }
 
 async function deleteEvent(id) {
-    if (!confirm('Bạn chắc chắn muốn xóa sự kiện này?')) return;
+    if (!confirm('Xóa sự kiện này?')) return;
     try {
         const res = await fetch(`${API_BASE}/api/events/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error(await res.text());
@@ -220,7 +232,7 @@ async function approveEvent(id) {
 }
 
 async function rejectEvent(id) {
-    if (!confirm('Từ chối và xóa sự kiện này?')) return;
+    if (!confirm('Từ chối và xóa sự kiện?')) return;
     await deleteEvent(id);
     closeViewModal();
 }
@@ -231,24 +243,24 @@ async function openEditModal(id) {
         if (!res.ok) throw new Error('Server lỗi');
         const events = await res.json();
         const event = events.find(e => e.id == id);
-        if (!event) throw new Error('Không tìm thấy sự kiện');
+        if (!event) throw new Error('Không tìm thấy');
 
         document.getElementById('editEventId').value = event.id;
         document.getElementById('editEventName').value = event.name;
         document.getElementById('editEventDescription').value = event.description || '';
-        document.getElementById('editEventStartTime').value = event.startTime.slice(0, 16);
-        document.getElementById('editEventEndTime').value = event.endTime.slice(0, 16);
-        document.getElementById('editRegistrationDeadline').value = event.registrationDeadline.slice(0, 16);
+        document.getElementById('editEventStartTime').value = event.startTime.slice(0,16);
+        document.getElementById('editEventEndTime').value = event.endTime.slice(0,16);
+        document.getElementById('editRegistrationDeadline').value = event.registrationDeadline.slice(0,16);
         document.getElementById('editEventLocation').value = event.location;
         document.getElementById('editRegistrationLink').value = event.registrationLink;
         document.getElementById('editEventOrganization').value = event.organizationId || '';
 
-        document.getElementById('editFileName').textContent = event.image ? 'Ảnh hiện tại đã có' : 'Chưa có ảnh nào được chọn';
+        document.getElementById('editFileName').textContent = event.image ? 'Ảnh hiện tại đã có' : 'Chưa có ảnh';
 
         document.getElementById('editModalOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     } catch (err) {
-        alert('Không load được dữ liệu để sửa!');
+        alert('Không load được dữ liệu sửa!');
     }
 }
 
@@ -271,13 +283,13 @@ async function openViewModal(id) {
         document.getElementById('viewRegistrationLink').href = event.registrationLink;
         document.getElementById('viewRegistrationLink').textContent = event.registrationLink;
 
-        const channelsDiv = document.getElementById('viewSocialChannels');
-        channelsDiv.innerHTML = '';
+        const channelsContainer = document.getElementById('viewSocialChannels');
+        channelsContainer.innerHTML = '';
         (event.channels || ['web']).forEach(ch => {
-            const span = document.createElement('span');
-            span.className = 'channel-tag';
-            span.textContent = ch.charAt(0).toUpperCase() + ch.slice(1);
-            channelsDiv.appendChild(span);
+            const tag = document.createElement('span');
+            tag.className = 'channel-tag';
+            tag.textContent = ch.charAt(0).toUpperCase() + ch.slice(1);
+            channelsContainer.appendChild(tag);
         });
 
         document.getElementById('approveEventBtn').onclick = () => approveEvent(event.id);
@@ -286,11 +298,11 @@ async function openViewModal(id) {
         document.getElementById('viewModalOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     } catch (err) {
-        alert('Không load được chi tiết sự kiện!');
+        alert('Không load được chi tiết!');
     }
 }
 
-// Close modal functions
+// Close modal
 function closeCreateModal() {
     document.getElementById('modalOverlay').classList.remove('active');
     document.body.style.overflow = 'auto';
@@ -313,18 +325,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadOrganizations();
     await loadEvents();
 
-    // Tab switching
+    // Tab
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
-            const tabId = btn.dataset.tab + '-content';
-            document.getElementById(tabId).classList.add('active');
+            document.getElementById(btn.dataset.tab + '-content').classList.add('active');
         });
     });
 
-    // Modal tạo sự kiện
+    // Modal tạo
     document.getElementById('openModalBtn').addEventListener('click', () => {
         document.getElementById('modalOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -338,14 +349,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.target === document.getElementById('modalOverlay')) closeCreateModal();
     });
 
-    // Upload ảnh tạo
     document.getElementById('uploadBtn').addEventListener('click', () => document.getElementById('eventImage').click());
     document.getElementById('eventImage').addEventListener('change', () => {
-        const fileName = document.getElementById('eventImage').files[0]?.name || 'Chưa có ảnh nào được chọn';
-        document.getElementById('fileName').textContent = fileName;
+        document.getElementById('fileName').textContent = document.getElementById('eventImage').files[0]?.name || 'Chưa có ảnh nào được chọn';
     });
 
-    // Chuyển bước
     document.getElementById('nextToSocial').addEventListener('click', () => {
         if (!document.getElementById('eventName').value.trim()) {
             alert('Vui lòng nhập tên sự kiện!');
@@ -362,7 +370,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('createEvent').addEventListener('click', createEvent);
 
-    // Modal sửa
+    // Modal sửa & xem
     document.getElementById('closeEditModalBtn').addEventListener('click', closeEditModal);
     document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
     document.getElementById('editModalOverlay').addEventListener('click', e => {
@@ -371,8 +379,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('editUploadBtn').addEventListener('click', () => document.getElementById('editEventImage').click());
     document.getElementById('editEventImage').addEventListener('change', () => {
-        const fileName = document.getElementById('editEventImage').files[0]?.name || 'Chưa có ảnh nào được chọn';
-        document.getElementById('editFileName').textContent = fileName;
+        document.getElementById('editFileName').textContent = document.getElementById('editEventImage').files[0]?.name || 'Chưa có ảnh nào được chọn';
     });
 
     document.getElementById('editEventForm').addEventListener('submit', e => {
@@ -380,14 +387,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateEvent(document.getElementById('editEventId').value);
     });
 
-    // Modal xem
     document.getElementById('closeViewModalBtn').addEventListener('click', closeViewModal);
     document.getElementById('closeViewBtn').addEventListener('click', closeViewModal);
     document.getElementById('viewModalOverlay').addEventListener('click', e => {
         if (e.target === document.getElementById('viewModalOverlay')) closeViewModal();
     });
 
-    // Delegate các nút động
+    // Delegate nút
     document.body.addEventListener('click', e => {
         const editBtn = e.target.closest('.edit-event-btn');
         if (editBtn) openEditModal(editBtn.dataset.id);
@@ -399,27 +405,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (seeBtn) openViewModal(seeBtn.dataset.id);
     });
 
-    // Cập nhật badge và status
     updateTabBadges();
     updateEventStatusBadges();
     setInterval(updateEventStatusBadges, 60000);
 });
 
-// Cập nhật số lượng trên tab
 function updateTabBadges() {
-    const counts = {
-        created: document.querySelectorAll('#created-content .content-card').length,
-        waitapproved: document.querySelectorAll('#waitapproved-content .content-card').length,
-        approved: document.querySelectorAll('#approved-content .content-card').length
-    };
-
     ['created', 'waitapproved', 'approved'].forEach(tab => {
+        const count = document.querySelectorAll(`#${tab}-content .content-card`).length;
         const badge = document.querySelector(`.tab-btn[data-tab="${tab}"] .badge`);
-        if (badge) badge.textContent = `(${counts[tab]})`;
+        if (badge) badge.textContent = `(${count})`;
     });
 }
 
-// Cập nhật Còn hạn / Hết hạn
 function updateEventStatusBadges() {
     const now = new Date();
     document.querySelectorAll('.content-card').forEach(card => {
@@ -438,9 +436,4 @@ function updateEventStatusBadges() {
             badge.className = 'status-badge disapproved';
         }
     });
-}
-
-// Kiểm tra tab trống (tùy chọn thêm thông báo)
-function checkEmptyTab() {
-    // Bạn có thể thêm thông báo "Không có sự kiện" nếu muốn
 }
