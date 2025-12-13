@@ -416,3 +416,111 @@ function updateEventStatusBadges() {
     });
 }
 
+
+// HÀM TÌM KIẾM MỚI – KẾT QUẢ ĐẨY LÊN ĐẦU + ẨN MƯỢT (2025 VERSION)
+function searchEvents(searchTerm) {
+    const containers = document.querySelectorAll('#created-content > .event-card, #waitapproved-content > .event-card, #approved-content > .event-card');
+    let foundAny = false;
+    searchTerm = searchTerm.toLowerCase().trim();
+    containers.forEach(container => {
+        const cards = Array.from(container.querySelectorAll('.content-card'));
+        // Reset tất cả card về trạng thái bình thường
+        cards.forEach(card => {
+            card.classList.remove('hidden-search');
+            card.style.order = '';
+        });
+        // Nếu không có từ khóa → trở về thứ tự ban đầu
+        if (searchTerm === '') {
+            cards.forEach((card, index) => card.style.order = index);
+            return;
+        }
+        const matched = [];
+        const unmatched = [];
+        cards.forEach(card => {
+            const name = (card.querySelector('.date p')?.textContent || '').toLowerCase();
+            const org = (card.querySelector('.event-info p:nth-child(5)')?.textContent || '')
+                        .toLowerCase()
+                        .replace(/🏢\s*tổ chức:\s*/g, '')
+                        .trim();
+            if (name.includes(searchTerm) || org.includes(searchTerm)) {
+                matched.push(card);
+                foundAny = true;
+            } else {
+                unmatched.push(card);
+            }
+        });
+        // Đẩy kết quả tìm được lên đầu
+        matched.forEach((card, i) => card.style.order = i);
+        unmatched.forEach((card, i) => card.style.order = matched.length + i);
+        // Ẩn mượt các card không khớp
+        unmatched.forEach(card => card.classList.add('hidden-search'));
+    });
+             // Xóa thông báo cũ
+    document.querySelectorAll('.no-results-message').forEach(el => el.remove());
+    // THÔNG BÁO SIÊU TỐI GIẢN – CHỈ CHỮ, KHÔNG NỀN, KHÔNG BOX, KHÔNG BLUR
+    if (searchTerm && !foundAny) {
+        const activeTab = document.querySelector('.tab-content.active');
+        if (!activeTab) return;
+        const overlay = document.createElement('div');
+        overlay.className = 'no-results-message';
+        overlay.style.cssText = `
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+           
+            z-index: 10;
+            pointer-events: none;
+            text-align: center;
+            color: #555;
+        `;
+        overlay.innerHTML = `
+            <div style="font-size: 28px; font-weight: 600; margin-bottom: 10px;">
+                Không tìm thấy sự kiện nào
+            </div>
+            <div style="font-size: 18px;">
+                có chứa từ khóa: <strong>"${searchTerm}"</strong>
+            </div>
+            <div style="margin-top: 18px; font-size: 15px; color: #888;">
+                Thử tìm từ khóa khác xem sao nhé
+            </div>
+        `;
+        // Đảm bảo tab có position để absolute hoạt động
+        if (getComputedStyle(activeTab).position === 'static') {
+            activeTab.style.position = 'relative';
+        }
+        activeTab.appendChild(overlay);
+   
+    }
+}
+// Hàm hiển thị thông báo không có kết quả
+function showNoResultsMessage(foundEvents, searchTerm) {
+    // Xóa thông báo cũ nếu có
+    const oldMessage = document.querySelector('.no-results-message');
+    if (oldMessage) {
+        oldMessage.remove();
+    }
+    // Nếu có từ khóa tìm kiếm và không tìm thấy sự kiện nào
+    if (searchTerm && !foundEvents) {
+        const noResultsMessage = document.createElement('div');
+        noResultsMessage.className = 'no-results-message';
+        noResultsMessage.style.cssText = `
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+            grid-column: 1 / -1;
+        `;
+        noResultsMessage.innerHTML = `
+<p>Không tìm thấy sự kiện nào phù hợp với từ khóa "<strong>${searchTerm}</strong>"</p>
+            <p style="margin-top: 10px; font-size: 14px; color: #888;">Hãy thử tìm kiếm với từ khóa khác</p>
+        `;
+        // Thêm thông báo vào container của các tab
+        const activeTab = document.querySelector('.tab-content.active');
+        if (activeTab) {
+            activeTab.appendChild(noResultsMessage);
+        }
+    }
+}
+
