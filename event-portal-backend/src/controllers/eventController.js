@@ -34,7 +34,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// CREATE
+// CREATE - FIX organizationId rỗng
 exports.create = [
   upload.single('image'),
   async (req, res) => {
@@ -42,24 +42,34 @@ exports.create = [
       const { name, description, startTime, endTime, registrationDeadline, location, registrationLink, organizationId, channels } = req.body;
       const image = req.file ? req.file.path : null;
 
+      // FIX: Chuyển organizationId rỗng hoặc "-----" thành null
+      const orgId = organizationId && organizationId.trim() !== '' && organizationId !== '-----' ? parseInt(organizationId, 10) : null;
+
       const event = await Event.create({
-        name, description, startTime, endTime, registrationDeadline,
-        location, registrationLink, image,
-        organizationId, channels: JSON.parse(channels || '["web"]')
+        name,
+        description,
+        startTime,
+        endTime,
+        registrationDeadline,
+        location,
+        registrationLink,
+        image,
+        organizationId: orgId,
+        channels: channels ? JSON.parse(channels) : ['web']
       });
 
       const result = await Event.findByPk(event.id, {
         include: [{ model: Organization, attributes: ['name'] }]
       });
-
       res.status(201).json(result);
     } catch (err) {
+      console.error('Lỗi tạo event:', err);
       res.status(400).json({ error: err.message });
     }
   }
 ];
 
-// UPDATE
+// UPDATE - FIX organizationId rỗng
 exports.update = [
   upload.single('image'),
   async (req, res) => {
@@ -70,9 +80,19 @@ exports.update = [
       const { name, description, startTime, endTime, registrationDeadline, location, registrationLink, organizationId, channels } = req.body;
       const image = req.file ? req.file.path : event.image;
 
+      // FIX: Chuyển organizationId rỗng hoặc "-----" thành null
+      const orgId = organizationId && organizationId.trim() !== '' && organizationId !== '-----' ? parseInt(organizationId, 10) : null;
+
       await event.update({
-        name, description, startTime, endTime, registrationDeadline,
-        location, registrationLink, image, organizationId,
+        name,
+        description,
+        startTime,
+        endTime,
+        registrationDeadline,
+        location,
+        registrationLink,
+        image,
+        organizationId: orgId,
         channels: channels ? JSON.parse(channels) : event.channels
       });
 
@@ -81,6 +101,7 @@ exports.update = [
       });
       res.json(updated);
     } catch (err) {
+      console.error('Lỗi update event:', err);
       res.status(400).json({ error: err.message });
     }
   }
@@ -117,4 +138,3 @@ exports.changeStatus = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
-
