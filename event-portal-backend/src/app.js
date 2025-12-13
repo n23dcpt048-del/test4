@@ -104,7 +104,7 @@ async function startServer() {
     console.log('SEED UGC THÀNH CÔNG!');
 
     // ==================== SEED SỰ KIỆN MẪU ====================
-    console.log('Đang seed 5 sự kiện mẫu...');
+        console.log('Đang seed 5 sự kiện mẫu (dùng organizationId cố định)...');
     await Event.bulkCreate([
       {
         name: 'ASTEES COLLECTION REVEAL',
@@ -117,7 +117,7 @@ async function startServer() {
         image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/565116867_122109067953007168_7188552843937308533_n.jpg',
         status: 'pending',
         channels: ['web'],
-        organizationId: orgs.find(o => o.name === 'A\'zone').id
+        organizationId: 1  // A'zone (giả sử ID = 1)
       },
       {
         name: 'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
@@ -130,7 +130,7 @@ async function startServer() {
         image: 'https://scontent.fdad3-1.fna.fbcdn.net/v/t39.30808-6/547828632_1216108510557641_566180599963180957_n.jpg',
         status: 'pending',
         channels: ['web'],
-        organizationId: orgs.find(o => o.name === 'ITMC').id
+        organizationId: 1  // ITMC (giả sử ID = 2)
       },
       {
         name: 'MARTIST – KHI THANH XUÂN CẤT TIẾNG',
@@ -143,7 +143,7 @@ async function startServer() {
         image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/574564898_1454449043350192_975546984353294738_n.jpg',
         status: 'pending',
         channels: ['web'],
-        organizationId: orgs.find(o => o.name === 'A\'zone').id
+        organizationId: 1  // A'zone
       },
       {
         name: 'THE ASTRO - THE INFINITY GENERATION',
@@ -156,7 +156,7 @@ async function startServer() {
         image: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/545054403_1242826237861546_7230088209638397878_n.jpg',
         status: 'approved',
         channels: ['web'],
-        organizationId: orgs.find(o => o.name === 'LCDCNDPT').id
+        organizationId: 1 // LCDCNDPT (giả sử ID = 3)
       },
       {
         name: 'HCM PTIT MULTIMEDIA 2025',
@@ -169,10 +169,10 @@ async function startServer() {
         image: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/566219856_1231088645726163_5271916207151874176_n.jpg',
         status: 'approved',
         channels: ['web', 'facebook', 'zalo'],
-        organizationId: orgs.find(o => o.name === 'LCDCNDPT').id
+        organizationId: 1  // LCDCNDPT
       }
     ], { ignoreDuplicates: true });
-    console.log('SEED 5 SỰ KIỆN MẪU THÀNH CÔNG! (3 pending + 2 approved)');
+    console.log('SEED 5 SỰ KIỆN MẪU THÀNH CÔNG! (dùng organizationId cố định)');
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server chạy tại: https://test4-7cop.onrender.com`);
@@ -186,4 +186,5 @@ async function startServer() {
 }
 
 startServer();
+
 
