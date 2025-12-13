@@ -76,8 +76,7 @@ function renderEventCard(event, tabId) {
         return `${hh}:${mm} ${dd}/${MM}/${yyyy}`;
     };
 
-    const orgName = event.Organization?.name || '-----';
-
+    const orgName = event.organizationName || event.Organization?.name || '-----';
     const channelsHtml = event.channels && event.channels.length > 0
         ? `<div class="displaymxh">
             ${event.channels.includes('web') ? '<div class="mxh"><div class="mxh-web">Web</div></div>' : ''}
@@ -416,3 +415,4 @@ function updateEventStatusBadges() {
         }
     });
 }
+
