@@ -55,7 +55,7 @@ async function startServer() {
     console.log('Kết nối PostgreSQL thành công!');
 
     // RESET 1 LẦN ĐỂ TẠO BẢNG MỚI (sau lần này sửa lại thành alter: true)
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ alter: true });  // Khuyến nghị
     console.log('RESET TOÀN BỘ BẢNG THÀNH CÔNG! Tạo mới với đầy đủ cột.');
 
 
@@ -186,5 +186,6 @@ async function startServer() {
 }
 
 startServer();
+
 
 
