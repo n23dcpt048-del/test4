@@ -12,18 +12,15 @@ const Event = sequelize.define('Event', {
   description: { type: DataTypes.TEXT },
   startTime: { 
     type: DataTypes.DATE, 
-    allowNull: true,         // Tạm thời cho phép null để alter thành công
-    defaultValue: null 
+    allowNull: true   // ← TẠM THỜI CHO PHÉP NULL ĐỂ SYNC THÀNH CÔNG
   },
   endTime: { 
     type: DataTypes.DATE, 
-    allowNull: true, 
-    defaultValue: null 
+    allowNull: true 
   },
   registrationDeadline: { 
     type: DataTypes.DATE, 
-    allowNull: true, 
-    defaultValue: null 
+    allowNull: true 
   },
   location: { type: DataTypes.STRING, allowNull: false },
   registrationLink: { type: DataTypes.STRING, allowNull: false },
