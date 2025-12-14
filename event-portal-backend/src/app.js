@@ -119,40 +119,47 @@ async function startServer() {
 // ==================== API CHO TRANG THỐNG KÊ ====================
 app.get('/api/stats', async (req, res) => {
   try {
-    // Tổng sự kiện (created + pending + approved)
+    // Tổng sự kiện
     const totalEvents = await Event.count();
 
-    // Sự kiện chờ duyệt (pending)
+    // Sự kiện chờ duyệt
     const pendingEvents = await Event.count({ where: { status: 'pending' } });
 
     // UGC chờ duyệt
     const pendingUgc = await Ugc.count({ where: { status: 'pending' } });
 
-    // Phân bố theo tổ chức (pie chart)
+    // Phân bố theo tổ chức (pie chart) - chỉ lấy event có organization
     const orgDistribution = await Event.findAll({
       attributes: [
         'organizationId',
         [sequelize.fn('COUNT', sequelize.col('id')), 'eventCount']
       ],
-      include: [{ model: Organization, attributes: ['name'] }],
+      include: [{
+        model: Organization,
+        attributes: ['name'],
+        required: true  // <-- THÊM DÒNG NÀY: INNER JOIN, bỏ qua event không có tổ chức
+      }],
       group: ['organizationId', 'Organization.id'],
       raw: true
     });
 
     const pieData = orgDistribution.map(row => ({
-      label: row['Organization.name'] || 'Chưa xác định',
+      label: row['Organization.name'] || 'Khác',
       value: parseInt(row.eventCount)
     }));
 
-    // Biểu đồ theo tháng - năm hiện tại (2025)
-    const currentYear = 2025; // Fix cứng năm 2025 vì data mẫu của bạn
+    // Thêm phần đếm event không có tổ chức (nếu muốn hiển thị)
+    const noOrgCount = await Event.count({ where: { organizationId: null } });
+    if (noOrgCount > 0) {
+      pieData.push({ label: 'Chưa xác định', value: noOrgCount });
+    }
 
+    // Biểu đồ theo tháng - lấy tất cả năm (không giới hạn 2025 nữa để tránh empty)
     const monthlyEvents = await Event.findAll({
       attributes: [
         [sequelize.fn('MONTH', sequelize.col('startTime')), 'month'],
         [sequelize.fn('COUNT', sequelize.col('id')), 'count']
       ],
-      where: sequelize.where(sequelize.fn('YEAR', sequelize.col('startTime')), currentYear),
       group: [sequelize.fn('MONTH', sequelize.col('startTime'))],
       raw: true
     });
@@ -160,7 +167,9 @@ app.get('/api/stats', async (req, res) => {
     const monthlyData = Array(12).fill(0);
     monthlyEvents.forEach(row => {
       const monthIndex = parseInt(row.month) - 1;
-      monthlyData[monthIndex] = parseInt(row.count);
+      if (monthIndex >= 0 && monthIndex < 12) {
+        monthlyData[monthIndex] = parseInt(row.count);
+      }
     });
 
     res.json({
@@ -172,10 +181,11 @@ app.get('/api/stats', async (req, res) => {
     });
   } catch (error) {
     console.error('Lỗi lấy stats:', error);
-    res.status(500).json({ error: 'Lỗi server thống kê' });
+    res.status(500).json({ error: 'Lỗi server thống kê: ' + error.message });
   }
 });
 startServer();
+
 
 
 
