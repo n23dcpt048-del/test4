@@ -119,25 +119,22 @@ async function startServer() {
 // ==================== API CHO TRANG THỐNG KÊ ====================
 app.get('/api/stats', async (req, res) => {
   try {
-    // 1. Tổng sự kiện: tất cả sự kiện (created + pending + approved)
+    // Tổng sự kiện (created + pending + approved)
     const totalEvents = await Event.count();
 
-    // 2. Sự kiện mới (chờ duyệt): status = 'pending'
+    // Sự kiện chờ duyệt (pending)
     const pendingEvents = await Event.count({ where: { status: 'pending' } });
 
-    // 3. Nội dung chờ duyệt: UGC status = 'pending'
+    // UGC chờ duyệt
     const pendingUgc = await Ugc.count({ where: { status: 'pending' } });
 
-    // 4. Phân bố theo tổ chức (pie chart): đếm số sự kiện mỗi tổ chức
+    // Phân bố theo tổ chức (pie chart)
     const orgDistribution = await Event.findAll({
       attributes: [
         'organizationId',
         [sequelize.fn('COUNT', sequelize.col('id')), 'eventCount']
       ],
-      include: [{
-        model: Organization,
-        attributes: ['name']
-      }],
+      include: [{ model: Organization, attributes: ['name'] }],
       group: ['organizationId', 'Organization.id'],
       raw: true
     });
@@ -147,9 +144,8 @@ app.get('/api/stats', async (req, res) => {
       value: parseInt(row.eventCount)
     }));
 
-    // 5. Biểu đồ sự kiện theo tháng (bar chart)
-    // Lấy năm hiện tại để nhóm (có thể thay đổi nếu cần nhiều năm)
-    const currentYear = new Date().getFullYear();
+    // Biểu đồ theo tháng - năm hiện tại (2025)
+    const currentYear = 2025; // Fix cứng năm 2025 vì data mẫu của bạn
 
     const monthlyEvents = await Event.findAll({
       attributes: [
@@ -161,10 +157,9 @@ app.get('/api/stats', async (req, res) => {
       raw: true
     });
 
-    // Tạo mảng 12 tháng đầy đủ (0-11)
     const monthlyData = Array(12).fill(0);
     monthlyEvents.forEach(row => {
-      const monthIndex = parseInt(row.month) - 1; // MONTH() trả về 1-12
+      const monthIndex = parseInt(row.month) - 1;
       monthlyData[monthIndex] = parseInt(row.count);
     });
 
@@ -172,15 +167,16 @@ app.get('/api/stats', async (req, res) => {
       totalEvents,
       pendingEvents,
       pendingUgc,
-      pieData,          // [{label: 'Azone', value: 1}, {label: 'LCCDCNPT', value: 3}, ...]
-      monthlyData       // [0,0,2,0,0,1,0,1,0,0,0,0]
+      pieData,
+      monthlyData
     });
   } catch (error) {
     console.error('Lỗi lấy stats:', error);
-    res.status(500).json({ error: 'Không thể lấy dữ liệu thống kê' });
+    res.status(500).json({ error: 'Lỗi server thống kê' });
   }
 });
 startServer();
+
 
 
 
