@@ -119,7 +119,9 @@ async function startServer() {
 // ==================== API CHO TRANG THỐNG KÊ ====================
 app.get('/api/stats', async (req, res) => {
   try {
-    const totalEvents = await Event.count();
+    const totalEvents = await Event.count({
+  where: { status: 'approved' }
+});
     const pendingEvents = await Event.count({ where: { status: 'pending' } });
     const pendingUgc = await Ugc.count({ where: { status: 'pending' } });
 
@@ -180,3 +182,4 @@ monthlyEvents.forEach(row => {
   }
 });
 startServer();
+
