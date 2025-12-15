@@ -119,28 +119,22 @@ async function startServer() {
 // ==================== API CHO TRANG THỐNG KÊ ====================
 app.get('/api/stats', async (req, res) => {
   try {
-    // 1. Tổng sự kiện
     const totalEvents = await Event.count();
-
-    // 2. Sự kiện chờ duyệt (pending)
     const pendingEvents = await Event.count({ where: { status: 'pending' } });
-
-    // 3. UGC chờ duyệt
     const pendingUgc = await Ugc.count({ where: { status: 'pending' } });
 
-    // 4. Phân bố theo tổ chức (pie chart)
-    // Đếm riêng các event CÓ organizationId
+    // Pie chart - phân bố tổ chức
     const orgDistribution = await Event.findAll({
       attributes: [
         'organizationId',
-        [sequelize.fn('COUNT', sequelize.literal('Event.id')), 'eventCount']  // <-- FIX: dùng Event.id rõ ràng
+        [sequelize.fn('COUNT', sequelize.col('Event.id')), 'eventCount']
       ],
       include: [{
         model: Organization,
         attributes: ['name'],
-        required: true  // INNER JOIN → chỉ lấy event có tổ chức
+        required: true
       }],
-      group: ['organizationId', 'Organization.id'],
+      group: ['Event.organizationId', 'Organization.id'],
       raw: true
     });
 
@@ -149,19 +143,18 @@ app.get('/api/stats', async (req, res) => {
       value: parseInt(row.eventCount)
     }));
 
-    // Đếm riêng event KHÔNG có tổ chức và thêm vào pie nếu có
     const noOrgCount = await Event.count({ where: { organizationId: null } });
     if (noOrgCount > 0) {
       pieData.push({ label: 'Chưa xác định', value: noOrgCount });
     }
 
-    // 5. Biểu đồ sự kiện theo tháng (không giới hạn năm)
+    // Bar chart - theo tháng
     const monthlyEvents = await Event.findAll({
       attributes: [
-        [sequelize.fn('MONTH', sequelize.col('startTime')), 'month'],
-        [sequelize.fn('COUNT', sequelize.literal('Event.id')), 'count']  // <-- FIX tương tự
+        [sequelize.fn('MONTH', sequelize.col('Event.startTime')), 'month'],
+        [sequelize.fn('COUNT', sequelize.col('Event.id')), 'count']
       ],
-      group: [sequelize.fn('MONTH', sequelize.col('startTime'))],
+      group: [sequelize.fn('MONTH', sequelize.col('Event.startTime'))],
       raw: true
     });
 
@@ -169,7 +162,7 @@ app.get('/api/stats', async (req, res) => {
     monthlyEvents.forEach(row => {
       const monthIndex = parseInt(row.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
-        monthlyData[monthIndex] += parseInt(row.count);  // += phòng trường hợp nhiều năm
+        monthlyData[monthIndex] += parseInt(row.count);
       }
     });
 
@@ -186,6 +179,7 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 startServer();
+
 
 
 
