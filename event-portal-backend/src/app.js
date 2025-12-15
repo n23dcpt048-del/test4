@@ -54,15 +54,30 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Kết nối PostgreSQL thành công!');
 
-    // RESET 1 LẦN ĐỂ TẠO BẢNG MỚI (sau lần này sửa lại thành alter: true)
-    await sequelize.sync({ alter: true });  // Khuyến nghị
+    await sequelize.sync({ alter: true });
     console.log('RESET TOÀN BỘ BẢNG THÀNH CÔNG! Tạo mới với đầy đủ cột.');
 
+    // ==================== SEED ORGANIZATION ====================
+    console.log('Đang xóa hết Organization cũ...');
+    await Organization.destroy({ truncate: true, cascade: true });
 
+    console.log('Đang seed Organization mẫu...');
+    const org1 = await Organization.create({
+      name: 'LKK',
+      description: 'Câu lạc bộ LKK - PTIT HCM',
+      logoUrl: 'https://example.com/lkk-logo.png' // có thể để null hoặc link thật
+    });
+    const org2 = await Organization.create({
+      name: 'x',
+      description: 'Câu lạc bộ x - PTIT HCM',
+      logoUrl: 'https://example.com/x-logo.png'
+    });
+    console.log('SEED ORGANIZATION THÀNH CÔNG!');
 
     // ==================== SEED UGC ====================
     console.log('Đang xóa hết UGC cũ...');
     await Ugc.destroy({ truncate: true, cascade: true });
+
     console.log('Đang seed lại 5 bài UGC mặc định...');
     await Ugc.bulkCreate([
       {
@@ -104,11 +119,69 @@ async function startServer() {
     console.log('SEED UGC THÀNH CÔNG!');
 
     // ==================== SEED SỰ KIỆN MẪU ====================
-         
+    console.log('Đang xóa hết Event cũ...');
+    await Event.destroy({ truncate: true, cascade: true });
+
+    console.log('Đang seed 4 sự kiện mẫu...');
+    await Event.bulkCreate([
+      {
+        name: 'Sự kiện LKK tháng 11',
+        description: 'Sự kiện mẫu của LKK',
+        startTime: '2025-11-15 10:00:00',
+        endTime: '2025-11-15 15:00:00',
+        registrationDeadline: '2025-11-10 23:59:00',
+        location: 'Hội trường D - PTIT HCM',
+        registrationLink: 'https://forms.gle/example1',
+        image: 'https://example.com/event1.jpg',
+        status: 'pending',
+        channels: ['web'],
+        organizationId: org1.id
+      },
+      {
+        name: 'Sự kiện x tháng 11',
+        description: 'Sự kiện mẫu của x',
+        startTime: '2025-11-20 09:00:00',
+        endTime: '2025-11-20 17:00:00',
+        registrationDeadline: '2025-11-15 23:59:00',
+        location: 'Hội trường 2A08 - PTIT HCM',
+        registrationLink: 'https://forms.gle/example2',
+        image: 'https://example.com/event2.jpg',
+        status: 'pending',
+        channels: ['web', 'facebook'],
+        organizationId: org2.id
+      },
+      {
+        name: 'Sự kiện không tổ chức tháng 12',
+        description: 'Sự kiện chung không thuộc tổ chức nào',
+        startTime: '2025-12-10 10:00:00',
+        endTime: '2025-12-10 15:00:00',
+        registrationDeadline: '2025-12-05 23:59:00',
+        location: 'Online',
+        registrationLink: 'https://forms.gle/example3',
+        image: 'https://example.com/event3.jpg',
+        status: 'approved',
+        channels: ['zalo'],
+        organizationId: null  // để có phần "Chưa xác định" trong pie chart
+      },
+      {
+        name: 'Sự kiện khác tháng 12',
+        description: 'Một sự kiện khác',
+        startTime: '2025-12-20 14:00:00',
+        endTime: '2025-12-20 18:00:00',
+        registrationDeadline: '2025-12-15 23:59:00',
+        location: 'Hội trường D',
+        registrationLink: 'https://forms.gle/example4',
+        image: 'https://example.com/event4.jpg',
+        status: 'approved',
+        channels: ['web'],
+        organizationId: null
+      }
+    ]);
+    console.log('SEED EVENT THÀNH CÔNG!');
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server chạy tại: https://test4-7cop.onrender.com`);
-      console.log(`Data mẫu đã sẵn sàng: Tổ chức + UGC + 5 Events`);
+      console.log(`Data mẫu đã sẵn sàng: Tổ chức + UGC + Events`);
     });
   } catch (error) {
     console.error('Lỗi khởi động server:', error);
@@ -116,6 +189,7 @@ async function startServer() {
     app.listen(PORT, '0.0.0.0', () => console.log('Server chạy ở chế độ lỗi'));
   }
 }
+
 // ==================== API CHO TRANG THỐNG KÊ ====================
 app.get('/api/stats', async (req, res) => {
   try {
@@ -148,24 +222,23 @@ app.get('/api/stats', async (req, res) => {
       pieData.push({ label: 'Chưa xác định', value: noOrgCount });
     }
 
-  
-    // Biểu đồ sự kiện theo tháng (sử dụng EXTRACT - chuẩn PostgreSQL)
-const monthlyEvents = await Event.findAll({
-  attributes: [
-    [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"')), 'month'],
-    [sequelize.fn('COUNT', sequelize.col('Event.id')), 'count']
-  ],
-  group: [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"'))],
-  raw: true
-});
+    // Bar chart - theo tháng (PostgreSQL)
+    const monthlyEvents = await Event.findAll({
+      attributes: [
+        [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"')), 'month'],
+        [sequelize.fn('COUNT', sequelize.col('Event.id')), 'count']
+      ],
+      group: [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"'))],
+      raw: true
+    });
 
-const monthlyData = Array(12).fill(0);
-monthlyEvents.forEach(row => {
-  const monthIndex = parseInt(row.month) - 1;
-  if (monthIndex >= 0 && monthIndex < 12) {
-    monthlyData[monthIndex] += parseInt(row.count);
-  }
-});
+    const monthlyData = Array(12).fill(0);
+    monthlyEvents.forEach(row => {
+      const monthIndex = parseInt(row.month) - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        monthlyData[monthIndex] += parseInt(row.count);
+      }
+    });
 
     res.json({
       totalEvents,
@@ -179,17 +252,5 @@ monthlyEvents.forEach(row => {
     res.status(500).json({ error: 'Lỗi server thống kê: ' + error.message });
   }
 });
+
 startServer();
-
-
-
-
-
-
-
-
-
-
-
-
-
