@@ -104,6 +104,8 @@ async function startServer() {
     console.log('SEED UGC THÀNH CÔNG!');
 
     // ==================== SEED SỰ KIỆN MẪU ====================
+        console.log('Đang xóa hết sự kiện cũ...');
+    await Ugc.destroy({ truncate: true, cascade: true });
         console.log('Đang seed 5 sự kiện mẫu (3 chờ duyệt + 2 đã duyệt)...');
     try {
       await Event.bulkCreate([
@@ -257,6 +259,7 @@ monthlyEvents.forEach(row => {
   }
 });
 startServer();
+
 
 
 
