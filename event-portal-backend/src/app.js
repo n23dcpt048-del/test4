@@ -119,7 +119,7 @@ async function startServer() {
           image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/565116867_122109067953007168_7188552843937308533_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=JL9RBlLqDvAQ7kNvwGklou9&_nc_oc=AdkriqcE4ePcY2wCKt07sj04WOe59TgR7EGNFTE0-LXTL9JX4q_LKyc08Km2UZ9OUUA&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=k7CwjZe_0zGuot42qDYWaw&oh=00_AfjsgzqyiFVkjs3lODAmMOyE47qP1hl3NP0pnEAJf9byaA&oe=692BB1F6',
           status: 'pending',
           channels: ['web'],
-          organizationId: 1 // Thay bằng ID tổ chức thật (ví dụ A'zone)
+          organizationId: 15 // Thay bằng ID tổ chức thật (ví dụ A'zone)
         },
         {
           name: 'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
@@ -132,7 +132,7 @@ async function startServer() {
           image: 'https://scontent.fdad3-1.fna.fbcdn.net/v/t39.30808-6/547828632_1216108510557641_566180599963180957_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=103&ccb=1-7&_nc_sid=127cfc&_nc_ohc=cSFJ-oW5RcwQ7kNvwE4HsMC&_nc_oc=Adk1Wv_P4ZyQCCI6j3sjxHeejBZVNrIN1TJv6P-6ibA_nHrjv3GG0BlNACpK5IuANMU&_nc_zt=23&_nc_ht=scontent.fdad3-1.fna&_nc_gid=pGc--EBLpGSOxQLnZ7zwNQ&oh=00_AfhpOBVjAnzNYllKAgzHkQ2a8b26_OapTEw_rUFfMVvRKg&oe=692BCA85',
           status: 'pending',
           channels: ['web'],
-          organizationId: 2 // Thay bằng ID tổ chức khác
+          organizationId: 15 // Thay bằng ID tổ chức khác
         },
         {
           name: 'MARTIST – KHI THANH XUÂN CẤT TIẾNG',
@@ -145,7 +145,7 @@ async function startServer() {
           image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/574564898_1454449043350192_975546984353294738_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_ohc=DbVvXUIpWswQ7kNvwEplIRf&_nc_oc=Adkrhn0-C1Z8GGRP-GsVnV2tzE66XSS4fAYNjXzSkodfHlOMmi59QC3oQnwi-da3Prs&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=buV18m_Nwv2DDvmT51wa3Q&oh=00_AfiKckUAZlbGIFB8aqHoUoTYMy42Oruc4C4zfOFAfVUCmg&oe=692BBE9B',
           status: 'pending',
           channels: ['web'],
-          organizationId: 1
+          organizationId: 15
         },
 
         // 2 sự kiện ĐÃ DUYỆT
@@ -160,7 +160,7 @@ async function startServer() {
           image: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/545054403_1242826237861546_7230088209638397878_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=BBqxo0nZs88Q7kNvwHOt-r5&_nc_oc=Adn4SmsLuB2HqqYCvvwRynPq2xyQVGwHrQIZn184TfXuuH4RYw2f6l7fTg4CfBFEKZQ&_nc_zt=23&_nc_ht=scontent.fdad3-4.fna&_nc_gid=LWxGyBhPoEnbh4fZYvyB_Q&oh=00_AfgPkXOShQbs2TOAvaanBb81YF18o4FW43VDOmdkmHDaAA&oe=692BCEF6',
           status: 'approved',
           channels: ['web'],
-          organizationId: 1
+          organizationId: 15
         },
         {
           name: 'HCM PTIT MULTIMEDIA 2025',
@@ -173,7 +173,7 @@ async function startServer() {
           image: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/566219856_1231088645726163_5271916207151874176_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=h51wD-vw-BkQ7kNvwHX9X1p&_nc_oc=Adnyv-SpShf0Oh2NXDIiIlKzVvSiP9-Zr0AjcL1PDlR-XwdE-IvEWiFmG-pU3oVHpUc&_nc_zt=23&_nc_ht=scontent.fdad3-4.fna&_nc_gid=8kYYM8rHvcavUSCoL--kCQ&oh=00_AfiiPuJ0eeCTNFK5SmIdSTUd2-zkj3bEVUToDkppaFDwgw&oe=692BC395',
           status: 'approved',
           channels: ['web', 'facebook', 'zalo'],
-          organizationId: 2
+          organizationId: 15
         }
       ], { ignoreDuplicates: true });
 
@@ -257,6 +257,7 @@ monthlyEvents.forEach(row => {
   }
 });
 startServer();
+
 
 
 
