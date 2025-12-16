@@ -104,8 +104,13 @@ async function startServer() {
     console.log('SEED UGC THÀNH CÔNG!');
 
     // ==================== SEED SỰ KIỆN MẪU ====================
-        console.log('Đang xóa hết sự kiện cũ...');
-    await Ugc.destroy({ truncate: true, cascade: true });
+       console.log('Đang xóa hết sự kiện cũ...');
+await Event.destroy({
+  truncate: true,
+  cascade: true,
+  restartIdentity: true
+});
+
         console.log('Đang seed 5 sự kiện mẫu (3 chờ duyệt + 2 đã duyệt)...');
     try {
       await Event.bulkCreate([
@@ -122,6 +127,7 @@ async function startServer() {
           status: 'pending',
           channels: ['web'],
           organizationId: 18 // Thay bằng ID tổ chức thật (ví dụ A'zone)
+          organizationName: LCDCNDPT 
         },
         {
           name: 'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
@@ -259,6 +265,7 @@ monthlyEvents.forEach(row => {
   }
 });
 startServer();
+
 
 
 
