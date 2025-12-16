@@ -26,13 +26,13 @@ const Event = sequelize.define('Event', {
     allowNull: true, // Cho phép null khi xóa tổ chức
     references: { model: Organization, key: 'id' }
   },
-  organizationName: { // Lưu tên tổ chức tại thời điểm tạo/sửa – không mất khi xóa tổ chức
+  organizationName: { // ← THÊM TRƯỜNG MỚI: Lưu tên tổ chức tại thời điểm tạo/sửa
     type: DataTypes.STRING,
     allowNull: true
   }
 }, { timestamps: true });
 
-// Khi xóa Organization → tự động set organizationId = null trên các Event liên quan
+// Khi xóa tổ chức → set organizationId = null trên các sự kiện liên quan (không xóa sự kiện)
 Event.belongsTo(Organization, { 
   foreignKey: 'organizationId', 
   onDelete: 'SET NULL' 
