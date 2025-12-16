@@ -127,7 +127,7 @@ await Event.destroy({
           status: 'pending',
           channels: ['web'],
           organizationId: 18 // Thay bằng ID tổ chức thật (ví dụ A'zone)
-          organizationName: LCDCNDPT 
+          organizationName: 'LCDCNDPT'
         },
         {
           name: 'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
@@ -265,6 +265,7 @@ monthlyEvents.forEach(row => {
   }
 });
 startServer();
+
 
 
 
