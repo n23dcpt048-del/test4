@@ -127,7 +127,7 @@ const logsData = [
   {
     time: "15/12/2025 09:12",
     user: "Nguyễn Văn Duy",
-    action: "Cập nhật Policy",
+    action: "Đăng nhập",
     actionType: "update",
     target: "Privacy Policy v1.2",
     ip: "192.168.1.10"
@@ -135,39 +135,10 @@ const logsData = [
   {
     time: "14/12/2025 21:40",
     user: "Nguyễn Ngọc Hương",
-    action: "Xem danh sách Consent",
+    action: "Đăng kí",
     actionType: "view",
     target: "User Consent Report",
-    ip: "192.168.1.5"
-  },
-  {
-    time: "14/12/2025 15:22",
-    user: "Lê Thiện Quân",
-    action: "Tạo Consent mới",
-    actionType: "create",
-    target: 'Consent "Chia sẻ thông tin với đối tác"',
-    ip: "192.168.1.8"
-  },
-  {
-    time: "13/12/2025 11:05",
-    user: "Dương Văn Minh",
-    action: "Vô hiệu hóa Consent",
-    actionType: "delete",
-    target: 'Consent "Chia sẻ thông tin với đối tác"',
-    ip: "192.168.1.15"
-  },
-  {
-    time: "13/12/2025 09:30",
-    user: "Lê Thị Phương Thảo",
-    action: "Đăng nhập hệ thống",
-    actionType: "login",
-    target: "Admin Dashboard",
-    ip: "192.168.1.20"
-  },
-  {
-    time: "12/12/2025 16:45",
-    user: "Trần Văn Nam",
-    action: "Xuất báo cáo",
+    ip: "192.168.1.5kiện",
     actionType: "view",
     target: "Compliance Report",
     ip: "192.168.1.25"
@@ -175,7 +146,7 @@ const logsData = [
   {
     time: "12/12/2025 14:30",
     user: "Phạm Thị Hoa",
-    action: "Chỉnh sửa Consent",
+    action: "Xem chi tiết sự kiện",
     actionType: "update",
     target: 'Consent "Thu thập thông tin cá nhân"',
     ip: "192.168.1.30"
@@ -183,7 +154,7 @@ const logsData = [
   {
     time: "11/12/2025 11:20",
     user: "Hoàng Văn Tùng",
-    action: "Xóa người dùng",
+    action: "Đăng nhập",
     actionType: "delete",
     target: "User: nguyenvana@gmail.com",
     ip: "192.168.1.35"
@@ -199,7 +170,7 @@ const logsData = [
   {
     time: "10/12/2025 17:30",
     user: "Vũ Văn Hải",
-    action: "Tạo Policy mới",
+    action: "Tạo sự kiên",
     actionType: "create",
     target: "Privacy Policy v1.1",
     ip: "192.168.1.45"
@@ -207,7 +178,7 @@ const logsData = [
   {
     time: "10/12/2025 13:45",
     user: "Bùi Thị Mai",
-    action: "Cập nhật thống kê",
+    action: "Đăng kí",
     actionType: "update",
     target: "Dashboard Statistics",
     ip: "192.168.1.50"
@@ -215,7 +186,7 @@ const logsData = [
   {
     time: "09/12/2025 10:20",
     user: "Lý Văn Hùng",
-    action: "Xem log hệ thống",
+    action: "Xem chi tiết sự kiện",
     actionType: "view",
     target: "System Logs",
     ip: "192.168.1.55"
@@ -931,4 +902,5 @@ function loadFromLocalStorage() {
   } catch (error) {
     console.error("Lỗi khi load localStorage:", error);
   }
+
 }
