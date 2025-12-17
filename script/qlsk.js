@@ -36,14 +36,14 @@ async function loadEvents() {
     if (!res.ok) throw new Error('Server lỗi');
     allEvents = await res.json();
 
-    // Xóa toàn bộ card cũ và thông báo trống cũ trong tất cả tab
+    // Xóa toàn bộ card cũ và thông báo trống cũ
     ['created', 'waitapproved', 'approved'].forEach(tab => {
       const wrapper = document.querySelector(`#${tab}-content .event-card`);
       if (wrapper) wrapper.innerHTML = '';
       removeEmptyMessage(tab + '-content');
     });
 
-    // Render lại các card
+    // Render lại card
     allEvents.forEach(event => {
       let tabId = '';
       if (event.status === 'created') tabId = 'created-content';
@@ -52,7 +52,7 @@ async function loadEvents() {
       if (tabId) renderEventCard(event, tabId);
     });
 
-    // Kiểm tra và hiển thị thông báo trống cho từng tab nếu không có card
+    // Kiểm tra và hiển thị thông báo trống cho từng tab
     ['created', 'waitapproved', 'approved'].forEach(tab => {
       const wrapper = document.querySelector(`#${tab}-content .event-card`);
       if (wrapper && wrapper.children.length === 0) {
@@ -73,7 +73,7 @@ function renderEventCard(event, tabId) {
   const wrapper = document.querySelector(`#${tabId} .event-card`);
   if (!wrapper) return;
 
-  // Khi có card mới → xóa thông báo trống của tab đó (nếu có)
+  // Xóa thông báo trống nếu có (vì sắp có card)
   removeEmptyMessage(tabId);
 
   const card = document.createElement('div');
@@ -86,8 +86,7 @@ function renderEventCard(event, tabId) {
     return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
   };
 
-  const orgName = event.organizationName || event.Organization?.name || '-----'; // FIX: ưu tiên tên lưu sẵn
-
+  const orgName = event.organizationName || event.Organization?.name || '-----';
   const channelsHtml = event.channels?.length > 0
     ? `<div class="displaymxh">
         ${event.channels.includes('web') ? '<div class="mxh"><div class="mxh-web">Web</div></div>' : ''}
@@ -130,17 +129,18 @@ function renderEventCard(event, tabId) {
   wrapper.appendChild(card);
 }
 
-// Hàm hiển thị thông báo "trống" trong tab
+// Hàm hiển thị thông báo trống trong tab
 function showEmptyMessage(tabContentId, message) {
   const content = document.getElementById(tabContentId);
   if (!content) return;
 
-  if (content.querySelector('.empty-message')) return; // Tránh tạo trùng
+  // Tránh tạo nhiều lần
+  if (content.querySelector('.empty-message')) return;
 
   const div = document.createElement('div');
   div.className = 'empty-message';
-  div.innerHTML = `<p style="text-align:center; color:#999; padding:60px 20px; font-size:18px;">${message}</p>`;
-
+  div.innerHTML = `<p style="text-align:center; color:#999; padding:40px 20px; font-size:16px;">${message}</p>`;
+  // Chèn trước .event-card
   const wrapper = content.querySelector('.event-card');
   if (wrapper) {
     content.insertBefore(div, wrapper);
@@ -149,34 +149,31 @@ function showEmptyMessage(tabContentId, message) {
   }
 }
 
-// Hàm xóa thông báo trống của tab
+// Hàm xóa thông báo trống
 function removeEmptyMessage(tabContentId) {
   const content = document.getElementById(tabContentId);
   if (!content) return;
-  const msg = content.querySelector('.empty-message:not(.search-empty)');
+  const msg = content.querySelector('.empty-message');
   if (msg) msg.remove();
 }
 
-// Hàm kiểm tra và hiển thị thông báo khi tìm kiếm không có kết quả
+// Hàm kiểm tra và hiển thị thông báo khi search không có kết quả
 function checkSearchEmpty() {
-  removeSearchEmptyMessage();
-
-  const searchTerm = document.getElementById('searchInput').value.trim();
-  if (searchTerm === '') return;
-
+  const visibleCards = document.querySelectorAll('.content-card:not(.hidden-search)');
   const activeTabContent = document.querySelector('.tab-content.active');
   if (!activeTabContent) return;
 
-  const visibleCards = activeTabContent.querySelectorAll('.content-card:not(.hidden-search)');
-  if (visibleCards.length === 0) {
+  removeSearchEmptyMessage();
+
+  if (visibleCards.length === 0 && document.getElementById('searchInput').value.trim() !== '') {
     const div = document.createElement('div');
     div.className = 'empty-message search-empty';
-    div.innerHTML = `<p style="text-align:center; color:#999; padding:60px 20px; font-size:18px;">Không tìm thấy sự kiện nào phù hợp</p>`;
+    div.innerHTML = `<p style="text-align:center; color:#999; padding:40px 20px; font-size:16px;">Không tìm thấy sự kiện nào phù hợp</p>`;
     activeTabContent.appendChild(div);
   }
 }
 
-// Xóa thông báo tìm kiếm trống
+// Xóa thông báo search trống
 function removeSearchEmptyMessage() {
   document.querySelectorAll('.search-empty').forEach(el => el.remove());
 }
@@ -196,7 +193,6 @@ async function createEvent() {
   formData.append('channels', JSON.stringify(channels));
   const file = document.getElementById('eventImage').files[0];
   if (file) formData.append('image', file);
-
   try {
     const res = await fetch(`${API_BASE}/api/events`, { method: 'POST', body: formData });
     if (!res.ok) throw new Error(await res.text());
@@ -218,6 +214,7 @@ async function updateEvent(id) {
   formData.append('location', document.getElementById('editEventLocation').value.trim());
   formData.append('registrationLink', document.getElementById('editRegistrationLink').value.trim());
   formData.append('organizationId', document.getElementById('editEventOrganization').value || null);
+
   const file = document.getElementById('editEventImage').files[0];
   if (file) formData.append('image', file);
 
@@ -299,10 +296,9 @@ function openViewModal(id) {
   document.getElementById('viewEventEndTime').textContent = new Date(event.endTime).toLocaleString('vi-VN');
   document.getElementById('viewRegistrationDeadline').textContent = new Date(event.registrationDeadline).toLocaleString('vi-VN');
   document.getElementById('viewEventLocation').textContent = event.location;
-  document.getElementById('viewEventOrganization').textContent = event.organizationName || event.Organization?.name || '-----';
+  document.getElementById('viewEventOrganization').textContent = event.organizationName || event.Organization?.name || '-----'; // FIX: ưu tiên organizationName
   document.getElementById('viewRegistrationLink').href = event.registrationLink;
   document.getElementById('viewRegistrationLink').textContent = event.registrationLink;
-
   const channelsDiv = document.getElementById('viewSocialChannels');
   channelsDiv.innerHTML = '';
   (event.channels || []).forEach(ch => {
@@ -311,10 +307,8 @@ function openViewModal(id) {
     tag.textContent = ch.charAt(0).toUpperCase() + ch.slice(1);
     channelsDiv.appendChild(tag);
   });
-
   document.getElementById('approveEventBtn').onclick = () => approveEvent(event.id);
   document.getElementById('rejectEventBtn').onclick = () => rejectEvent(event.id);
-
   document.getElementById('viewModalOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -337,12 +331,13 @@ function closeViewModal() {
   document.body.style.overflow = 'auto';
 }
 
+
 // ==================== UI & EVENTS ====================
 document.addEventListener('DOMContentLoaded', async () => {
   await loadOrganizations();
   await loadEvents();
 
-  // Tab switching
+  // Tab
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -350,18 +345,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       btn.classList.add('active');
       document.getElementById(btn.dataset.tab + '-content').classList.add('active');
 
-      // Khi chuyển tab, kiểm tra lại thông báo search trống
+      // Khi chuyển tab, kiểm tra lại search empty (nếu đang search)
       checkSearchEmpty();
     });
   });
-
-  // Modal tạo sự kiện
+  // Modal tạo
   document.getElementById('openModalBtn').addEventListener('click', () => {
     document.getElementById('modalOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
     document.getElementById('step1').classList.add('active');
     document.getElementById('step2').classList.remove('active');
   });
+
   document.getElementById('closeModalBtn').addEventListener('click', closeCreateModal);
   document.getElementById('cancelBtn').addEventListener('click', closeCreateModal);
   document.getElementById('modalOverlay').addEventListener('click', e => {
@@ -381,10 +376,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('step1').classList.remove('active');
     document.getElementById('step2').classList.add('active');
   });
+
   document.getElementById('backToStep1').addEventListener('click', () => {
     document.getElementById('step2').classList.remove('active');
     document.getElementById('step1').classList.add('active');
   });
+
   document.getElementById('createEvent').addEventListener('click', createEvent);
 
   // Modal sửa
@@ -393,10 +390,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('editModalOverlay').addEventListener('click', e => {
     if (e.target === document.getElementById('editModalOverlay')) closeEditModal();
   });
+
   document.getElementById('editUploadBtn').addEventListener('click', () => document.getElementById('editEventImage').click());
   document.getElementById('editEventImage').addEventListener('change', () => {
     document.getElementById('editFileName').textContent = document.getElementById('editEventImage').files[0]?.name || 'Chưa có ảnh nào được chọn';
   });
+
   document.getElementById('editEventForm').addEventListener('submit', e => {
     e.preventDefault();
     updateEvent(document.getElementById('editEventId').value);
@@ -409,7 +408,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (e.target === document.getElementById('viewModalOverlay')) closeViewModal();
   });
 
-  // Delegate các nút hành động
+  // Delegate nút
   document.body.addEventListener('click', e => {
     const editBtn = e.target.closest('.edit-event-btn');
     if (editBtn) openEditModal(editBtn.dataset.id);
@@ -421,27 +420,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (seeBtn) openViewModal(seeBtn.dataset.id);
   });
 
-  // Tìm kiếm
+ // Search – đã chỉnh để có thông báo không tìm thấy
   document.getElementById('searchInput').addEventListener('input', e => {
     const term = e.target.value.toLowerCase().trim();
-
     if (!term) {
       document.querySelectorAll('.content-card').forEach(card => card.classList.remove('hidden-search'));
       removeSearchEmptyMessage();
       return;
     }
 
+    let hasResult = false;
     document.querySelectorAll('.content-card').forEach(card => {
       const name = card.querySelector('.date p')?.textContent.toLowerCase() || '';
       const org = card.querySelector('.event-info p:nth-child(5)')?.textContent.toLowerCase() || '';
       if (name.includes(term) || org.includes(term)) {
         card.classList.remove('hidden-search');
+        hasResult = true;
       } else {
         card.classList.add('hidden-search');
       }
     });
 
-    checkSearchEmpty(); // Hiển thị thông báo nếu không tìm thấy
+    checkSearchEmpty(); // hiển thị thông báo nếu không có kết quả
   });
 
   updateTabBadges();
@@ -456,29 +456,9 @@ function updateTabBadges() {
     if (badge) badge.textContent = `(${count})`;
   });
 }
-
-function updateEventStatusBadges() {
-  const now = new Date();
-  document.querySelectorAll('.content-card').forEach(card => {
-    const p = Array.from(card.querySelectorAll('.event-info p')).find(p => p.textContent.includes('📅 Hạn đăng ký:'));
-    if (!p) return;
-    const text = p.textContent.match(/(\d{2}\/\d{2}\/\d{4})/);
-    if (!text) return;
-    const [dd, mm, yyyy] = text[1].split('/');
-    const deadline = new Date(`${yyyy}-${mm}-${dd}T23:59:59`);
-    const badge = card.querySelector('.status-badge');
-    if (deadline >= now) {
-      badge.textContent = 'Còn hạn';
-      badge.className = 'status-badge approved';
-    } else {
-      badge.textContent = 'Hết hạn';
-      badge.className = 'status-badge disapproved';
-    }
-  });
-}
-
 // LOGOUT
 document.querySelector('.logout-btn')?.addEventListener('click', () => {
   localStorage.clear();
   window.location.href = 'index.html';
 });
+
