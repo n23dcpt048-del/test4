@@ -1,9 +1,12 @@
 # 🎉 CỔNG FESTIVAL SINH VIÊN
 
 ## 1. Chạy thử dự án
+** Page Admin (Bài làm chính)
 * Mở liên kết: [https://github.com/n23dcpt048-del/test4/deployments/github-pages](https://n23dcpt048-del.github.io/test4/)
 * Tài khoản đăng nhập: admin@gmail.com
 * Password: 123456
+** Page User (Minh họa danh sách sự kiện và phần "Liên kết xã hội", "Thông tin liên lạc" ở footer)
+* Mở liên kết: https://n23dcpt048-del.github.io/page-user/
   
 ## 2. Giới thiệu chung
 
