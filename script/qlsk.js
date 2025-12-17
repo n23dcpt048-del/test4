@@ -1,4 +1,4 @@
-// ==================== KẾT NỐI BACKEND ====================ugugug
+// ==================== KẾT NỐI BACKEND ====================
 const API_BASE = 'https://test4-7cop.onrender.com';
 let organizations = [];
 let allEvents = []; // Cache events để mở modal sửa/xem nhanh
@@ -404,6 +404,4 @@ document.querySelector('.logout-btn')?.addEventListener('click', () => {
   localStorage.clear();
   window.location.href = 'index.html';
 });
-
-
 
