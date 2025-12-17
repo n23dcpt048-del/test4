@@ -1,22 +1,23 @@
-// models/Contact.js
-module.exports = (sequelize, DataTypes) => {
-  const Contact = sequelize.define('Contact', {
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    address: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  }, {
-    timestamps: true,
-    tableName: 'contacts'
-  });
+// src/models/Contact.js
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-  return Contact;
-};
+const Contact = sequelize.define('Contact', {
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+}, {
+  timestamps: true,
+  tableName: 'Contacts' // PostgreSQL phân biệt hoa thường, nên viết hoa C
+});
+
+module.exports = Contact;
