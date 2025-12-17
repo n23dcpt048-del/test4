@@ -3,52 +3,73 @@ const API_BASE = 'https://test4-7cop.onrender.com';
 let organizations = [];
 let allEvents = []; // Cache events để mở modal sửa/xem nhanh
 
-// Load tổ chức thật từ backend
+// Load tổ chức – có retry, không alert
 async function loadOrganizations() {
-  try {
-    const res = await fetch(`${API_BASE}/api/organizations`);
-    if (!res.ok) throw new Error('Server lỗi');
-    organizations = await res.json();
-    const selects = [
-      document.getElementById('eventOrganization'),
-      document.getElementById('editEventOrganization')
-    ];
-    selects.forEach(select => {
-      if (!select) return;
-      select.innerHTML = '<option value="">-----</option>';
-      organizations.forEach(org => {
-        const opt = document.createElement('option');
-        opt.value = org.id;
-        opt.textContent = org.name;
-        select.appendChild(opt);
+  let success = false;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const res = await fetch(`${API_BASE}/api/organizations`, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`Status: ${res.status}`);
+      organizations = await res.json();
+
+      const selects = [
+        document.getElementById('eventOrganization'),
+        document.getElementById('editEventOrganization')
+      ];
+      selects.forEach(select => {
+        if (!select) return;
+        select.innerHTML = '<option value="">-----</option>';
+        organizations.forEach(org => {
+          const opt = document.createElement('option');
+          opt.value = org.id;
+          opt.textContent = org.name;
+          select.appendChild(opt);
+        });
       });
-    });
-  } catch (err) {
-    console.error('Không load được tổ chức:', err);
-    alert('Không kết nối server để load tổ chức!');
+      success = true;
+      break;
+    } catch (err) {
+      console.warn(`Lần thử load tổ chức ${i + 1}/3 thất bại:`, err);
+      if (i < 2) await new Promise(r => setTimeout(r, 1500));
+    }
+  }
+  if (!success) {
+    console.error('Không load được danh sách tổ chức sau 3 lần thử.');
   }
 }
 
-// Load events thật từ backend + cache
+// Load events – có retry, không alert
 async function loadEvents() {
-  try {
-    const res = await fetch(`${API_BASE}/api/events`);
-    if (!res.ok) throw new Error('Server lỗi');
-    allEvents = await res.json();
-    // Xóa card cũ
-    document.querySelectorAll('.event-card').forEach(wrapper => wrapper.innerHTML = '');
-    allEvents.forEach(event => {
-      let tabId = '';
-      if (event.status === 'created') tabId = 'created-content';
-      else if (event.status === 'pending') tabId = 'waitapproved-content';
-      else if (event.status === 'approved') tabId = 'approved-content';
-      if (tabId) renderEventCard(event, tabId);
-    });
-    updateTabBadges();
-    updateEventStatusBadges();
-  } catch (err) {
-    console.error('Không load được events:', err);
-    alert('Không kết nối server để load sự kiện!');
+  let success = false;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const res = await fetch(`${API_BASE}/api/events`, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`Status: ${res.status}`);
+      allEvents = await res.json();
+
+      // Xóa card cũ
+      document.querySelectorAll('.event-card').forEach(wrapper => wrapper.innerHTML = '');
+
+      // Render lại card
+      allEvents.forEach(event => {
+        let tabId = '';
+        if (event.status === 'created') tabId = 'created-content';
+        else if (event.status === 'pending') tabId = 'waitapproved-content';
+        else if (event.status === 'approved') tabId = 'approved-content';
+        if (tabId) renderEventCard(event, tabId);
+      });
+
+      updateTabBadges();
+      updateEventStatusBadges();
+      success = true;
+      break;
+    } catch (err) {
+      console.warn(`Lần thử load events ${i + 1}/3 thất bại:`, err);
+      if (i < 2) await new Promise(r => setTimeout(r, 1500));
+    }
+  }
+  if (!success) {
+    console.error('Không load được danh sách sự kiện sau 3 lần thử.');
   }
 }
 
@@ -56,15 +77,19 @@ async function loadEvents() {
 function renderEventCard(event, tabId) {
   const wrapper = document.querySelector(`#${tabId} .event-card`);
   if (!wrapper) return;
+
   const card = document.createElement('div');
   card.className = 'content-card';
   card.dataset.id = event.id;
+
   const formatDate = (iso) => {
     if (!iso) return 'Chưa xác định';
     const d = new Date(iso);
     return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
   };
-  const orgName = event.organizationName || event.Organization?.name || '-----'; // FIX: ưu tiên tên lưu sẵn
+
+  const orgName = event.organizationName || event.Organization?.name || '-----';
+
   const channelsHtml = event.channels?.length > 0
     ? `<div class="displaymxh">
         ${event.channels.includes('web') ? '<div class="mxh"><div class="mxh-web">Web</div></div>' : ''}
@@ -72,6 +97,7 @@ function renderEventCard(event, tabId) {
         ${event.channels.includes('zalo') ? '<div class="zalo"><div class="zalo-content">Zalo</div></div>' : ''}
        </div>`
     : '<div class="mxh"><div class="mxh-web">Web</div></div>';
+
   let buttonsHtml = '';
   if (event.status === 'created') {
     buttonsHtml = `
@@ -84,6 +110,7 @@ function renderEventCard(event, tabId) {
   } else if (event.status === 'approved') {
     buttonsHtml = `<div class="button-container"><button class="delete-btn" data-id="${event.id}">Xóa</button></div>`;
   }
+
   card.innerHTML = `
     <div class="content-image">
       <img src="${event.image || 'https://via.placeholder.com/400x250/f0f0f0/999?text=No+Image'}" alt="${event.name}">
@@ -120,6 +147,7 @@ async function createEvent() {
   formData.append('channels', JSON.stringify(channels));
   const file = document.getElementById('eventImage').files[0];
   if (file) formData.append('image', file);
+
   try {
     const res = await fetch(`${API_BASE}/api/events`, { method: 'POST', body: formData });
     if (!res.ok) throw new Error(await res.text());
@@ -141,7 +169,6 @@ async function updateEvent(id) {
   formData.append('location', document.getElementById('editEventLocation').value.trim());
   formData.append('registrationLink', document.getElementById('editRegistrationLink').value.trim());
   formData.append('organizationId', document.getElementById('editEventOrganization').value || null);
-
   const file = document.getElementById('editEventImage').files[0];
   if (file) formData.append('image', file);
 
@@ -223,9 +250,10 @@ function openViewModal(id) {
   document.getElementById('viewEventEndTime').textContent = new Date(event.endTime).toLocaleString('vi-VN');
   document.getElementById('viewRegistrationDeadline').textContent = new Date(event.registrationDeadline).toLocaleString('vi-VN');
   document.getElementById('viewEventLocation').textContent = event.location;
-  document.getElementById('viewEventOrganization').textContent = event.organizationName || event.Organization?.name || '-----'; // FIX: ưu tiên organizationName
+  document.getElementById('viewEventOrganization').textContent = event.organizationName || event.Organization?.name || '-----';
   document.getElementById('viewRegistrationLink').href = event.registrationLink;
   document.getElementById('viewRegistrationLink').textContent = event.registrationLink;
+
   const channelsDiv = document.getElementById('viewSocialChannels');
   channelsDiv.innerHTML = '';
   (event.channels || []).forEach(ch => {
@@ -234,8 +262,10 @@ function openViewModal(id) {
     tag.textContent = ch.charAt(0).toUpperCase() + ch.slice(1);
     channelsDiv.appendChild(tag);
   });
+
   document.getElementById('approveEventBtn').onclick = () => approveEvent(event.id);
   document.getElementById('rejectEventBtn').onclick = () => rejectEvent(event.id);
+
   document.getElementById('viewModalOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -280,7 +310,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('step1').classList.add('active');
     document.getElementById('step2').classList.remove('active');
   });
-
   document.getElementById('closeModalBtn').addEventListener('click', closeCreateModal);
   document.getElementById('cancelBtn').addEventListener('click', closeCreateModal);
   document.getElementById('modalOverlay').addEventListener('click', e => {
@@ -300,12 +329,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('step1').classList.remove('active');
     document.getElementById('step2').classList.add('active');
   });
-
   document.getElementById('backToStep1').addEventListener('click', () => {
     document.getElementById('step2').classList.remove('active');
     document.getElementById('step1').classList.add('active');
   });
-
   document.getElementById('createEvent').addEventListener('click', createEvent);
 
   // Modal sửa
@@ -314,12 +341,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('editModalOverlay').addEventListener('click', e => {
     if (e.target === document.getElementById('editModalOverlay')) closeEditModal();
   });
-
   document.getElementById('editUploadBtn').addEventListener('click', () => document.getElementById('editEventImage').click());
   document.getElementById('editEventImage').addEventListener('change', () => {
     document.getElementById('editFileName').textContent = document.getElementById('editEventImage').files[0]?.name || 'Chưa có ảnh nào được chọn';
   });
-
   document.getElementById('editEventForm').addEventListener('submit', e => {
     e.preventDefault();
     updateEvent(document.getElementById('editEventId').value);
@@ -404,4 +429,3 @@ document.querySelector('.logout-btn')?.addEventListener('click', () => {
   localStorage.clear();
   window.location.href = 'index.html';
 });
-
