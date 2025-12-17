@@ -131,10 +131,10 @@ async function startServer() {
           registrationDeadline: '2026-10-23T23:00:00',
           location: 'Hội trường D - Học viện Công nghệ Bưu chính Viễn thông Cơ sở TPHCM',
           registrationLink: 'https://forms.gle/DdqnFSqYmFawhLqg6',
-          image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/565116867_122109067953007168_7188552843937308533_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=JL9RBlLqDvAQ7kNvwGklou9&_nc_oc=AdkriqcE4ePcY2wCKt07sj04WOe59TgR7EGNFTE0-LXTL9JX4q_LKyc08Km2UZ9OUUA&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=k7CwjZe_0zGuot42qDYWaw&oh=00_AfjsgzqyiFVkjs3lODAmMOyE47qP1hl3NP0pnEAJf9byaA&oe=692BB1F6',
+          image: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/550290142_122104165029007168_2086284108334656361_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=100&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=4rrFDI2Es18Q7kNvwF9_XJ4&_nc_oc=AdkmYxDSQQl-CDUIMyANHpXQFanSofJbNYZoAJVz2lqUiGZsWNklQimxFZA0dwLT3YI&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&_nc_gid=faBdVJxJEMxm711US-sOLQ&oh=00_Aflbas5UqSGgpQTQ1mAXsFo42Jm68a_B-UEggrbCurTyMw&oe=69487D5F',
           status: 'pending',
           channels: ['web'],
-          organizationId: 18
+          organizationId: 25
         },
         {
           name: 'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
@@ -144,10 +144,10 @@ async function startServer() {
           registrationDeadline: '2025-11-24T20:00:00',
           location: 'Học viện Công nghệ Bưu chính Viễn thông – Cơ sở TP.HCM',
           registrationLink: 'https://forms.gle/6fCD8ZMh6oDHYtsu6',
-          image: 'https://scontent.fdad3-1.fna.fbcdn.net/v/t39.30808-6/547828632_1216108510557641_566180599963180957_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=103&ccb=1-7&_nc_sid=127cfc&_nc_ohc=cSFJ-oW5RcwQ7kNvwE4HsMC&_nc_oc=Adk1Wv_P4ZyQCCI6j3sjxHeejBZVNrIN1TJv6P-6ibA_nHrjv3GG0BlNACpK5IuANMU&_nc_zt=23&_nc_ht=scontent.fdad3-1.fna&_nc_gid=pGc--EBLpGSOxQLnZ7zwNQ&oh=00_AfhpOBVjAnzNYllKAgzHkQ2a8b26_OapTEw_rUFfMVvRKg&oe=692BCA85',
+          image: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/547453886_1215997780568714_2352432209521607908_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=107&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=cF-OCsChGx8Q7kNvwH2ljU5&_nc_oc=Adn1_GE9BBYZVduSjI73e_vF6dLiVcwmYMzM21vsLDZ-8b-eY_WSjwNCi52XRzr6I1Q&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&_nc_gid=8KIRvCBMolmnuZLVQJ76rg&oh=00_AfnxqsR6QnHR4loYEchGAVvY7P6l_lurk3tqbMBtcyGXqg&oe=69489BC8',
           status: 'pending',
           channels: ['web'],
-          organizationId: 18
+          organizationId: 22
         },
         {
           name: 'MARTIST – KHI THANH XUÂN CẤT TIẾNG',
@@ -157,7 +157,7 @@ async function startServer() {
           registrationDeadline: '2026-11-24T20:00:00',
           location: 'Hội trường D – Học viện Công nghệ Bưu chính Viễn thông',
           registrationLink: 'https://forms.gle/SoMUjShn7mnULVUT9',
-          image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/574564898_1454449043350192_975546984353294738_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_ohc=DbVvXUIpWswQ7kNvwEplIRf&_nc_oc=Adkrhn0-C1Z8GGRP-GsVnV2tzE66XSS4fAYNjXzSkodfHlOMmi59QC3oQnwi-da3Prs&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=buV18m_Nwv2DDvmT51wa3Q&oh=00_AfiKckUAZlbGIFB8aqHoUoTYMy42Oruc4C4zfOFAfVUCmg&oe=692BBE9B',
+          image: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/572089425_1452357286892701_8341956418215394135_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=111&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=7AHKr9rHZV8Q7kNvwF11570&_nc_oc=Adkl72Ngm3sN_sWGYaIr6O5XWi50ARqUS_WV1nCn9b308QRfPirAZWgl5Q5j-cL0ieo&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&_nc_gid=yoTByvHPHRG_Ochk0yk3_A&oh=00_Afny6BC7acY1rE42e0vbkjGDfdzAltN-offrthQ0mgTkLA&oe=6948AEAB',
           status: 'pending',
           channels: ['web'],
           organizationId: 20
@@ -171,7 +171,7 @@ async function startServer() {
           registrationDeadline: '2025-11-24T20:00:00',
           location: 'Hội trường D, Học viện Công nghệ Bưu chính Viễn thông – Cơ sở TP.HCM',
           registrationLink: 'https://forms.gle/7pVGy2kN9t7WJRbr6',
-          image: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/545054403_1242826237861546_7230088209638397878_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=BBqxo0nZs88Q7kNvwHOt-r5&_nc_oc=Adn4SmsLuB2HqqYCvvwRynPq2xyQVGwHrQIZn184TfXuuH4RYw2f6l7fTg4CfBFEKZQ&_nc_zt=23&_nc_ht=scontent.fdad3-4.fna&_nc_gid=LWxGyBhPoEnbh4fZYvyB_Q&oh=00_AfgPkXOShQbs2TOAvaanBb81YF18o4FW43VDOmdkmHDaAA&oe=692BCEF6',
+          image: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/545054403_1242826237861546_7230088209638397878_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=BPz4fcF5ITYQ7kNvwEUIhf_&_nc_oc=AdmBavqA49dTvNNJtsH-EGWli8oYq_ufkVBEG95vChhKsUilYXs36c53Qq5KhzbzYRM&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&_nc_gid=UmlAmJcO32CRAjITceEeoA&oh=00_Afl2fThdVBAUev6hiEHIiIBF3WGRjaLB8vrunN7iR2oWQA&oe=694897B6',
           status: 'approved',
           channels: ['web'],
           organizationId: 21
@@ -271,4 +271,5 @@ app.get('/api/stats', async (req, res) => {
 });
 
 startServer();
+
 
