@@ -9,12 +9,14 @@ const Organization = require('./models/Organization');
 const Event = require('./models/Event');
 const Ugc = require('./models/Ugc');
 const SocialMedia = require('./models/SocialMedia');
+const Contact = require('./models/Contact'); // ← THÊM MỚI
 
 // ==================== ROUTES ====================
 const organizationRoutes = require('./routes/organizationRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const ugcRoutes = require('./routes/ugcRoutes');
 const socialMediaRoutes = require('./routes/socialMediaRoutes');
+const contactRoutes = require('./routes/contactRoutes'); // ← THÊM MỚI
 
 const app = express();
 
@@ -32,6 +34,7 @@ app.use('/api/organizations', organizationRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/ugc', ugcRoutes);
 app.use('/api/social-medias', socialMediaRoutes);
+app.use('/api/contact', contactRoutes); // ← THÊM MỚI
 
 // ==================== TRANG TEST ====================
 app.get('/', (req, res) => {
@@ -41,7 +44,8 @@ app.get('/', (req, res) => {
     </h1>
     <p style="text-align:center;font-size:18px;">
       <a href="/api/ugc/pending" style="margin:0 10px;">UGC chờ duyệt</a> |
-      <a href="/api/social-medias" style="margin:0 10px;">Mạng xã hội</a>
+      <a href="/api/social-medias" style="margin:0 10px;">Mạng xã hội</a> |
+      <a href="/api/contact" style="margin:0 10px;">Thông tin liên lạc</a>
     </p>
   `);
 });
@@ -54,11 +58,9 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Kết nối PostgreSQL thành công!');
 
-    // RESET 1 LẦN ĐỂ TẠO BẢNG MỚI (sau lần này sửa lại thành alter: true)
-    await sequelize.sync({ alter: true });  // Khuyến nghị
-    console.log('RESET TOÀN BỘ BẢNG THÀNH CÔNG! Tạo mới với đầy đủ cột.');
-
-
+    // Sync tất cả models (alter để thêm cột mới nếu cần)
+    await sequelize.sync({ alter: true });
+    console.log('SYNC TOÀN BỘ BẢNG THÀNH CÔNG!');
 
     // ==================== SEED UGC ====================
     console.log('Đang xóa hết UGC cũ...');
@@ -104,23 +106,20 @@ async function startServer() {
     console.log('SEED UGC THÀNH CÔNG!');
 
     // ==================== SEED SỰ KIỆN MẪU ====================
-   console.log('Xóa các sự kiện mẫu cũ...');
+    console.log('Xóa các sự kiện mẫu cũ...');
+    await Event.destroy({
+      where: {
+        name: [
+          'ASTEES COLLECTION REVEAL',
+          'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
+          'MARTIST – KHI THANH XUÂN CẤT TIẾNG',
+          'THE ASTRO - THE INFINITY GENERATION',
+          'HCM PTIT MULTIMEDIA 2025'
+        ]
+      }
+    });
 
-await Event.destroy({
-  where: {
-    name: [
-      'ASTEES COLLECTION REVEAL',
-      'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
-      'MARTIST – KHI THANH XUÂN CẤT TIẾNG',
-      'THE ASTRO - THE INFINITY GENERATION',
-      'HCM PTIT MULTIMEDIA 2025'
-    ]
-  }
-});
-
-
-
-        console.log('Đang seed 5 sự kiện mẫu (3 chờ duyệt + 2 đã duyệt)...');
+    console.log('Đang seed 5 sự kiện mẫu (3 chờ duyệt + 2 đã duyệt)...');
     try {
       await Event.bulkCreate([
         // 3 sự kiện CHỜ DUYỆT
@@ -135,8 +134,7 @@ await Event.destroy({
           image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/565116867_122109067953007168_7188552843937308533_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=JL9RBlLqDvAQ7kNvwGklou9&_nc_oc=AdkriqcE4ePcY2wCKt07sj04WOe59TgR7EGNFTE0-LXTL9JX4q_LKyc08Km2UZ9OUUA&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=k7CwjZe_0zGuot42qDYWaw&oh=00_AfjsgzqyiFVkjs3lODAmMOyE47qP1hl3NP0pnEAJf9byaA&oe=692BB1F6',
           status: 'pending',
           channels: ['web'],
-          organizationId: 18 // Thay bằng ID tổ chức thật (ví dụ A'zone)
-          
+          organizationId: 18
         },
         {
           name: 'FABULOUS-ITMC MỞ ĐƠN TUYỂN THÀNH VIÊN',
@@ -149,7 +147,7 @@ await Event.destroy({
           image: 'https://scontent.fdad3-1.fna.fbcdn.net/v/t39.30808-6/547828632_1216108510557641_566180599963180957_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=103&ccb=1-7&_nc_sid=127cfc&_nc_ohc=cSFJ-oW5RcwQ7kNvwE4HsMC&_nc_oc=Adk1Wv_P4ZyQCCI6j3sjxHeejBZVNrIN1TJv6P-6ibA_nHrjv3GG0BlNACpK5IuANMU&_nc_zt=23&_nc_ht=scontent.fdad3-1.fna&_nc_gid=pGc--EBLpGSOxQLnZ7zwNQ&oh=00_AfhpOBVjAnzNYllKAgzHkQ2a8b26_OapTEw_rUFfMVvRKg&oe=692BCA85',
           status: 'pending',
           channels: ['web'],
-          organizationId: 18 // Thay bằng ID tổ chức khác
+          organizationId: 18
         },
         {
           name: 'MARTIST – KHI THANH XUÂN CẤT TIẾNG',
@@ -164,7 +162,6 @@ await Event.destroy({
           channels: ['web'],
           organizationId: 19
         },
-
         // 2 sự kiện ĐÃ DUYỆT
         {
           name: 'THE ASTRO - THE INFINITY GENERATION',
@@ -193,16 +190,15 @@ await Event.destroy({
           organizationId: 21
         }
       ], { ignoreDuplicates: true });
-
       console.log('SEED 5 SỰ KIỆN MẪU THÀNH CÔNG! (3 chờ duyệt + 2 đã duyệt)');
     } catch (seedError) {
       console.error('Lỗi seed sự kiện mẫu:', seedError);
     }
-    // ========================================================== 
 
+    // ==========================================================
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server chạy tại: https://test4-7cop.onrender.com`);
-      console.log(`Data mẫu đã sẵn sàng: Tổ chức + UGC + 5 Events`);
+      console.log(`Data mẫu đã sẵn sàng: Tổ chức + UGC + 5 Events + Social Media + Contact`);
     });
   } catch (error) {
     console.error('Lỗi khởi động server:', error);
@@ -210,6 +206,7 @@ await Event.destroy({
     app.listen(PORT, '0.0.0.0', () => console.log('Server chạy ở chế độ lỗi'));
   }
 }
+
 // ==================== API CHO TRANG THỐNG KÊ ====================
 app.get('/api/stats', async (req, res) => {
   try {
@@ -242,24 +239,23 @@ app.get('/api/stats', async (req, res) => {
       pieData.push({ label: 'Chưa xác định', value: noOrgCount });
     }
 
-  
-    // Biểu đồ sự kiện theo tháng (sử dụng EXTRACT - chuẩn PostgreSQL)
-const monthlyEvents = await Event.findAll({
-  attributes: [
-    [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"')), 'month'],
-    [sequelize.fn('COUNT', sequelize.col('Event.id')), 'count']
-  ],
-  group: [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"'))],
-  raw: true
-});
+    // Biểu đồ sự kiện theo tháng
+    const monthlyEvents = await Event.findAll({
+      attributes: [
+        [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"')), 'month'],
+        [sequelize.fn('COUNT', sequelize.col('Event.id')), 'count']
+      ],
+      group: [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "Event"."startTime"'))],
+      raw: true
+    });
 
-const monthlyData = Array(12).fill(0);
-monthlyEvents.forEach(row => {
-  const monthIndex = parseInt(row.month) - 1;
-  if (monthIndex >= 0 && monthIndex < 12) {
-    monthlyData[monthIndex] += parseInt(row.count);
-  }
-});
+    const monthlyData = Array(12).fill(0);
+    monthlyEvents.forEach(row => {
+      const monthIndex = parseInt(row.month) - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        monthlyData[monthIndex] += parseInt(row.count);
+      }
+    });
 
     res.json({
       totalEvents,
@@ -273,15 +269,5 @@ monthlyEvents.forEach(row => {
     res.status(500).json({ error: 'Lỗi server thống kê: ' + error.message });
   }
 });
+
 startServer();
-
-
-
-
-
-
-
-
-
-
-
