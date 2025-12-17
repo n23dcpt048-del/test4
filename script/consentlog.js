@@ -127,7 +127,7 @@ const logsData = [
   {
     time: "15/12/2025 09:12",
     user: "Nguyễn Văn Duy",
-    action: "Cập nhật Policy",
+    action: "Cập nhật sự kiện",
     actionType: "update",
     target: "Privacy Policy v1.2",
     ip: "192.168.1.10"
@@ -135,7 +135,7 @@ const logsData = [
   {
     time: "14/12/2025 21:40",
     user: "Nguyễn Ngọc Hương",
-    action: "Xem danh sách Consent",
+    action: "Xem danh sách sự kiện",
     actionType: "view",
     target: "User Consent Report",
     ip: "192.168.1.5"
@@ -143,87 +143,9 @@ const logsData = [
   {
     time: "14/12/2025 15:22",
     user: "Lê Thiện Quân",
-    action: "Tạo Consent mới",
+    action: "Xem chi tiết sự kiện",
     actionType: "create",
-    target: 'Consent "Chia sẻ thông tin với đối tác"',
-    ip: "192.168.1.8"
-  },
-  {
-    time: "13/12/2025 11:05",
-    user: "Dương Văn Minh",
-    action: "Vô hiệu hóa Consent",
-    actionType: "delete",
-    target: 'Consent "Chia sẻ thông tin với đối tác"',
-    ip: "192.168.1.15"
-  },
-  {
-    time: "13/12/2025 09:30",
-    user: "Lê Thị Phương Thảo",
-    action: "Đăng nhập hệ thống",
-    actionType: "login",
-    target: "Admin Dashboard",
-    ip: "192.168.1.20"
-  },
-  {
-    time: "12/12/2025 16:45",
-    user: "Trần Văn Nam",
-    action: "Xuất báo cáo",
-    actionType: "view",
-    target: "Compliance Report",
-    ip: "192.168.1.25"
-  },
-  {
-    time: "12/12/2025 14:30",
-    user: "Phạm Thị Hoa",
-    action: "Chỉnh sửa Consent",
-    actionType: "update",
-    target: 'Consent "Thu thập thông tin cá nhân"',
-    ip: "192.168.1.30"
-  },
-  {
-    time: "11/12/2025 11:20",
-    user: "Hoàng Văn Tùng",
-    action: "Xóa người dùng",
-    actionType: "delete",
-    target: "User: nguyenvana@gmail.com",
-    ip: "192.168.1.35"
-  },
-  {
-    time: "11/12/2025 09:15",
-    user: "Đỗ Thị Lan",
-    action: "Đăng xuất hệ thống",
-    actionType: "login",
-    target: "Admin Dashboard",
-    ip: "192.168.1.40"
-  },
-  {
-    time: "10/12/2025 17:30",
-    user: "Vũ Văn Hải",
-    action: "Tạo Policy mới",
-    actionType: "create",
-    target: "Privacy Policy v1.1",
-    ip: "192.168.1.45"
-  },
-  {
-    time: "10/12/2025 13:45",
-    user: "Bùi Thị Mai",
-    action: "Cập nhật thống kê",
-    actionType: "update",
-    target: "Dashboard Statistics",
-    ip: "192.168.1.50"
-  },
-  {
-    time: "09/12/2025 10:20",
-    user: "Lý Văn Hùng",
-    action: "Xem log hệ thống",
-    actionType: "view",
-    target: "System Logs",
-    ip: "192.168.1.55"
-  },
-  {
-    time: "09/12/2025 08:45",
-    user: "Đinh Thị Thu",
-    action: "Kích hoạt Consent",
+    target: 'Consent "Chia sẻ thông tin vxuất",
     actionType: "update",
     target: 'Consent "Sử dụng hình ảnh"',
     ip: "192.168.1.60"
@@ -239,7 +161,7 @@ const logsData = [
   {
     time: "08/12/2025 14:00",
     user: "Trần Văn Bình",
-    action: "Sao lưu dữ liệu",
+    action: "Đăng kíkí",
     actionType: "create",
     target: "System Backup",
     ip: "192.168.1.70"
@@ -327,34 +249,78 @@ function savePolicy() {
 
 function previewPolicy() {
   const content = document.getElementById("privacyPolicy").value;
-
-  const modal = document.createElement("div");
-  modal.style.cssText = `
+  
+  // Tạo modal container
+  const modalOverlay = document.createElement("div");
+  modalOverlay.className = "modal-overlay";
+  modalOverlay.style.cssText = `
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
     padding: 20px;
   `;
-
-  modal.innerHTML = `
-    <div style="background: #fff; width: 90%; max-width: 800px; max-height: 90%; overflow: auto; padding: 30px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0; color: #2c3e50;">Xem trước Chính sách quyền riêng tư</h2>
-        <button onclick="this.closest('div').parentNode.remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">×</button>
-      </div>
-      <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; border: 1px solid #dee2e6;">
-        <pre style="white-space: pre-wrap; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; margin: 0; font-size: 15px;">${content}</pre>
-      </div>
-      <div style="margin-top: 20px; text-align: right;">
-        <button onclick="this.closest('div').parentNode.remove()" class="btn btn-primary">Đóng</button>
-      </div>
+  
+  // Tạo modal content
+  const modalContent = document.createElement("div");
+  modalContent.className = "modal-content";
+  modalContent.style.cssText = `
+    background: #fff;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90%;
+    overflow: auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+  `;
+  
+  // Thêm nội dung
+  modalContent.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 style="margin: 0; color: #2c3e50;">Xem trước Chính sách quyền riêng tư</h2>
+      <button class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">×</button>
+    </div>
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; border: 1px solid #dee2e6; margin-bottom: 20px;">
+      <pre style="white-space: pre-wrap; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; margin: 0; font-size: 15px; max-height: 400px; overflow-y: auto;">${content}</pre>
+    </div>
+    <div style="text-align: right;">
+      <button class="btn btn-primary close-btn">Đóng</button>
     </div>
   `;
-  document.body.appendChild(modal);
+  
+  // Gắn các phần tử
+  modalOverlay.appendChild(modalContent);
+  document.body.appendChild(modalOverlay);
+  
+  // Thêm sự kiện đóng modal
+  const closeBtns = modalOverlay.querySelectorAll('.close-btn');
+  closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => modalOverlay.remove());
+  });
+  
+  // Đóng khi click ra ngoài modal content
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) {
+      modalOverlay.remove();
+    }
+  });
+  
+  // Đóng bằng phím ESC
+  const handleEsc = (e) => {
+    if (e.key === 'Escape') {
+      modalOverlay.remove();
+      document.removeEventListener('keydown', handleEsc);
+    }
+  };
+  document.addEventListener('keydown', handleEsc);
 }
 
 /***********************
