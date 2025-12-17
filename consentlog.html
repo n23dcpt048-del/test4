@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVENT PORTAL - Quản lý quyền riêng tư & tuân thủ</title>
+  <link rel="stylesheet" href="consentlog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>EVENT PORTAL</h2>
+
+    <ul class="menu">
+      <li class="active"><a href="tke.html">Thống kê</a></li>
+      <li><a href="tochuc.html">Tổ chức</a></li>
+      <li><a href="qlsk.html">Quản lý sự kiện</a></li>
+      <li><a href="qlnd.html">Quản lý nội dung (UGC)</a></li>
+      <li><a href="mxh.html">Mạng xã hội</a></li>
+      <li><a href="seo.html">Cài đặt SEO</a></li>
+    </ul>
+
+    <div class="logout">
+      <div class="user-info">ABC<br><small>Admin</small></div><br>
+      <button id="logout-btn" class="logout-btn">Đăng xuất</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+   <div class="main">
+    <h1>Quyền riêng tư và tuân thủ</h1>
+    <div class="sub">Quản lý chính sách bảo mật, sự đồng ý của người dùng và nhật ký hệ thống</div>
+   
+
+    <div class="stats">
+      <div class="card">
+        <h3>Người dùng đã đồng ý</h3>
+        <div class="value-small">12</div>
+      </div>
+      <div class="card">
+        <h3>Chính sách hiện hành</h3>
+        <div class="value-small">125,678</div>
+      </div>
+      <div class="card">
+        <h3>Tỷ lệ tuân thủ</h3>
+        <div class="value-small">98%</div>
+      </div>
+    </div>
+
+    <!-- Privacy Policy Management -->
+    <section class="card card-expand expanded">
+      <div class="card-header">
+        <h3> Quản lý chính sách quyền riêng tư</h3>
+      </div>
+      
+      <div class="card-body">
+        <div class="form-group">
+          <label>Nội dung chính sách hiện hành</label>
+          <textarea id="privacyPolicy" placeholder="Nhập nội dung chính sách quyền riêng tư..." rows="15">Chính sách Quyền riêng tư
+
+1. Thông tin thu thập
+Chúng tôi thu thập thông tin cá nhân khi bạn đăng ký tham gia sự kiện, bao gồm:
+- Họ và tên
+- Email và số điện thoại
+- Thông tin đơn vị công tác/học tập
+
+2. Mục đích sử dụng
+Thông tin được sử dụng để:
+- Quản lý đăng ký tham gia sự kiện
+- Gửi thông báo về sự kiện
+- Cải thiện trải nghiệm người dùng
+- Phục vụ mục đích thống kê và báo cáo
+
+3. Bảo mật thông tin
+Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn bằng các biện pháp bảo mật tiên tiến nhất. Thông tin sẽ không được chia sẻ với bên thứ ba mà không có sự đồng ý của bạn, trừ khi được yêu cầu bởi pháp luật.
+
+4. Quyền của người dùng
+Bạn có quyền:
+- Truy cập và chỉnh sửa thông tin cá nhân
+- Yêu cầu xóa tài khoản
+- Rút lại sự đồng ý về thu thập dữ liệu
+- Khiếu nại về việc xử lý dữ liệu
+
+5. Thời gian lưu trữ
+Thông tin cá nhân sẽ được lưu trữ trong 2 năm kể từ ngày tham gia sự kiện cuối cùng, trừ khi có yêu cầu xóa sớm từ phía người dùng.
+
+6. Liên hệ
+Mọi thắc mắc về chính sách quyền riêng tư, vui lòng liên hệ:
+- Email: admin@admin.com
+- Điện thoại: 0123 456 789</textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="savePolicy()"> Lưu chính sách quyền riêng tư</button>
+          <button class="btn btn-outline" onclick="previewPolicy()"> Xem trước</button>
+        </div>
+
+        <div class="version-history">
+          <h4>Lịch sử phiên bản chính sách</h4>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Phiên bản</th>
+                  <th>Người cập nhật</th>
+                  <th>Thời gian</th>
+                  <th>Mô tả thay đổi</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="version-badge">v1.2</span></td>
+                  <td>
+                    <div class="user-cell">
+                      <span>ABC</span>
+                    </div>
+                  </td>
+                  <td>10:30:01 15/12/2025 </td>
+                  <td>Cập nhật thời gian lưu trữ từ 1 năm lên 2 năm</td>
+                  <td><span class="status-badge active">Hiện hành</span></td>
+                </tr>
+                <tr>
+                  <td><span class="version-badge">v1.1</span></td>
+                  <td>
+                    <div class="user-cell">
+                      <span>ABC</span>
+                    </div>
+                  </td>
+                  <td>14:15:27 10/12/2025 </td>
+                  <td>Thêm mục "Quyền của người dùng" theo quy định mới</td>
+                  <td><span class="status-badge inactive">Cũ</span></td>
+                </tr>
+                <tr>
+                  <td><span class="version-badge">v1.0</span></td>
+                  <td>
+                    <div class="user-cell">
+                      <span>ABC</span>
+                    </div>
+                  </td>
+                  <td>09:00:00 01/12/2025 </td>
+                  <td>Phiên bản đầu tiên</td>
+                  <td><span class="status-badge inactive">Cũ</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Consent Management -->
+    <section class="card">
+      <div class="card-header">
+        <h3>Quản lý sự đồng ý của người dùng (Consent)</h3>
+        <div class="card-actions">
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tên loại Consent</label>
+            <input type="text" id="consentName" placeholder="Ví dụ: Đồng ý sử dụng hình ảnh" />
+          </div>
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select id="consentStatus">
+              <option value="active">Kích hoạt</option>
+              <option value="inactive">Tạm dừng</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mô tả Consent</label>
+          <textarea id="consentDescription" placeholder="Mô tả chi tiết về loại consent này (sẽ hiển thị cho người dùng)..." rows="3"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveConsent()"> Lưu Consent</button>
+          <button class="btn btn-outline" onclick="clearConsentForm()"> Hủy</button>
+        </div>
+
+        <div class="consent-list">
+          <h4> Danh sách các loại Consent</h4>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Loại Consent</th>
+                  <th>Mô tả</th>
+                  <th>Ngày tạo</th>
+                  <th>Số người đồng ý</th>
+                  <th>Trạng thái</th>
+                  <th>Bật/tắt</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Thu thập thông tin cá nhân</strong></td>
+                  <td>Cho phép hệ thống thu thập họ tên, email và số điện thoại</td>
+                  <td>01/12/2025</td>
+                  <td>12</td>
+                  <td>
+  <span class="status-badge active" id="badge-doitac-1">
+    Kích hoạt
+  </span>
+</td>
+
+<td>
+  <label class="toggle-switch">
+    <input type="checkbox" checked
+           onchange="toggleConsent(this, 'Chia sẻ thông tin với đối tác', 'badge-doitac')">
+    <span class="toggle-slider"></span>
+  </label>
+</td>
+                </tr>
+                <tr>
+                  <td><strong>Sử dụng hình ảnh sự kiện</strong></td>
+                  <td>Cho phép sử dụng hình ảnh tham gia sự kiện cho mục đích truyền thông</td>
+                  <td>05/12/2025</td>
+                  <td>9</td>
+                  <td>
+  <span class="status-badge active" id="badge-doitac-2">
+    Kích hoạt
+  </span>
+</td>
+
+<td>
+  <label class="toggle-switch">
+    <input type="checkbox" checked
+           onchange="toggleConsent(this, 'Chia sẻ thông tin với đối tác', 'badge-doitac')">
+    <span class="toggle-slider"></span>
+  </label>
+</td>
+                </tr>
+                <tr>
+                  <td><strong>Nhận email thông báo</strong></td>
+                  <td>Cho phép gửi email thông báo về các sự kiện sắp diễn ra</td>
+                  <td>05/12/2025</td>
+                  <td>5</td>
+                  <td>
+  <span class="status-badge active" id="badge-doitac-3">
+    Kích hoạt
+  </span>
+</td>
+
+<td>
+  <label class="toggle-switch">
+    <input type="checkbox" checked
+           onchange="toggleConsent(this, 'Chia sẻ thông tin với đối tác', 'badge-doitac')">
+    <span class="toggle-slider"></span>
+  </label>
+</td>
+                </tr>
+                <tr>
+                  <td><strong>Chia sẻ thông tin với đối tác</strong></td>
+                  <td>Cho phép chia sẻ thông tin với đơn vị đồng tổ chức sự kiện</td>
+                  <td>12/12/2025</td>
+                  <td>3</td>
+                  <td>
+  <span class="status-badge inactive" id="badge-doitac-4">
+    Tạm dừng
+  </span>
+</td>
+
+<td>
+  <label class="toggle-switch">
+    <input type="checkbox"
+           onchange="toggleConsent(this, 'Chia sẻ thông tin với đối tác', 'badge-doitac')">
+    <span class="toggle-slider"></span>
+  </label>
+</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="user-consent-list">
+          <div class="section-header">
+            <h4> Danh sách người dùng theo Consent</h4>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Người dùng</th>
+                  <th>Consent</th>
+                  <th>Trạng thái</th>
+                  <th>Thời gian</th>
+                  <th>IP / Thiết bị</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <i class="fas fa-user-circle"></i>
+                      <span>lethiphuongthao@gmail.com</span>
+                    </div>
+                  </td>
+                  <td>Sử dụng hình ảnh sự kiện</td>
+                  <td><span class="status-badge success">Đã đồng ý</span></td>
+                  <td>12/12/2025 14:20</td>
+                  <td>192.168.1.20 / Chrome</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <i class="fas fa-user-circle"></i>
+                      <span>tranminhduc@gmail.com</span>
+                    </div>
+                  </td>
+                  <td>Thu thập thông tin cá nhân</td>
+                  <td><span class="status-badge success">Đã đồng ý</span></td>
+                  <td>13/12/2025 09:45</td>
+                  <td>192.168.1.25 / Chrome</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <i class="fas fa-user-circle"></i>
+                      <span>lehuongiang@gmail.com</span>
+                    </div>
+                  </td>
+                  <td>Chia sẻ thông tin với đối tác</td>
+                  <td><span class="status-badge warning">Từ chối</span></td>
+                  <td>14/12/2025 16:30</td>
+                  <td>192.168.1.30 / Chrome</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <i class="fas fa-user-circle"></i>
+                      <span>phamthithao@gmail.com</span>
+                    </div>
+                  </td>
+                  <td>Nhận email thông báo</td>
+                  <td><span class="status-badge success">Đã đồng ý</span></td>
+                  <td>15/12/2025 11:15</td>
+                  <td>192.168.1.35 / Chrome</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="pagination">
+            <button class="btn btn-outline"><i class="fas fa-chevron-left"></i></button>
+            <span class="page-number active">1</span>
+            <span class="page-number">2</span>
+            <span class="page-number">3</span>
+            <button class="btn btn-outline"><i class="fas fa-chevron-right"></i></button>
+            <span class="page-info">Hiển thị 1-4 của 12 bản ghi</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logs Management -->
+    <section class="card">
+      <div class="card-header">
+        <h3> Nhật ký hệ thống (Logs)</h3>
+      </div>
+      
+      <div class="card-body">
+        <div class="logs-list">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Thời gian</th>
+                  <th>Người thực hiện</th>
+                  <th>Hành động</th>
+                  <th>Đối tượng</th>
+                  <th>IP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>15/12/2025 09:12</td>
+                  <td>
+                    <div class="user-cell">
+                      <span>Nguyễn Văn Duy</span>
+                    </div>
+                  </td>
+                  <td><span class="log-action update">Cập nhật Policy</span></td>
+                  <td>Privacy Policy v1.2</td>
+                  <td>192.168.1.10</td>
+                <tr>
+                  <td>14/12/2025 21:40</td>
+                  <td>
+                    <div class="user-cell">
+                      <span>Nguyễn Ngọc Hương</span>
+                    </div>
+                  </td>
+                  <td><span class="log-action view">Xem danh sách Consent</span></td>
+                  <td>User Consent Report</td>
+                  <td>192.168.1.5</td>
+                </tr>
+                <tr>
+                  <td>14/12/2025 15:22</td>
+                  <td>
+                    <div class="user-cell">
+                      <span>Lê Thiện Quân</span>
+                    </div>
+                  </td>
+                  <td><span class="log-action create">Tạo Consent mới</span></td>
+                  <td>Consent "Chia sẻ thông tin với đối tác"</td>
+                  <td>192.168.1.8</td>
+                </tr>
+                <tr>
+                  <td>13/12/2025 11:05</td>
+                  <td>
+                    <div class="user-cell">
+                      <span>Dương Văn Minh</span>
+                    </div>
+                  </td>
+                  <td><span class="log-action delete">Vô hiệu hóa Consent</span></td>
+                  <td>Consent "Chia sẻ thông tin với đối tác"</td>
+                  <td>192.168.1.15</td>
+                </tr>
+                <tr>
+                  <td>13/12/2025 09:30</td>
+                  <td>
+                    <div class="user-cell">
+                      <span>Lê Thị Phương Thảo</span>
+                    </div>
+                  </td>
+                  <td><span class="log-action login">Đăng nhập hệ thống</span></td>
+                  <td>Admin Dashboard</td>
+                  <td>192.168.1.20</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="pagination">
+  <button class="btn btn-outline prev-btn">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <span class="page-number active">1</span>
+  <span class="page-number">2</span>
+  <span class="page-number">3</span>
+  <span class="page-number">4</span>
+  <span class="page-number">5</span>
+
+  <button class="btn btn-outline next-btn">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+
+  <span class="page-info"></span>
+</div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="consentlog.js"></script>
+</body>
+</html>
