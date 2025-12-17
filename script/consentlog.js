@@ -127,7 +127,7 @@ const logsData = [
   {
     time: "15/12/2025 09:12",
     user: "Nguyễn Văn Duy",
-    action: "Cập nhật sự kiện",
+    action: "Cập nhật Policy",
     actionType: "update",
     target: "Privacy Policy v1.2",
     ip: "192.168.1.10"
@@ -135,7 +135,7 @@ const logsData = [
   {
     time: "14/12/2025 21:40",
     user: "Nguyễn Ngọc Hương",
-    action: "Xem danh sách sự kiện",
+    action: "Xem danh sách Consent",
     actionType: "view",
     target: "User Consent Report",
     ip: "192.168.1.5"
@@ -143,9 +143,87 @@ const logsData = [
   {
     time: "14/12/2025 15:22",
     user: "Lê Thiện Quân",
-    action: "Xem chi tiết sự kiện",
+    action: "Tạo Consent mới",
     actionType: "create",
-    target: 'Consent "Chia sẻ thông tin vxuất",
+    target: 'Consent "Chia sẻ thông tin với đối tác"',
+    ip: "192.168.1.8"
+  },
+  {
+    time: "13/12/2025 11:05",
+    user: "Dương Văn Minh",
+    action: "Vô hiệu hóa Consent",
+    actionType: "delete",
+    target: 'Consent "Chia sẻ thông tin với đối tác"',
+    ip: "192.168.1.15"
+  },
+  {
+    time: "13/12/2025 09:30",
+    user: "Lê Thị Phương Thảo",
+    action: "Đăng nhập hệ thống",
+    actionType: "login",
+    target: "Admin Dashboard",
+    ip: "192.168.1.20"
+  },
+  {
+    time: "12/12/2025 16:45",
+    user: "Trần Văn Nam",
+    action: "Xuất báo cáo",
+    actionType: "view",
+    target: "Compliance Report",
+    ip: "192.168.1.25"
+  },
+  {
+    time: "12/12/2025 14:30",
+    user: "Phạm Thị Hoa",
+    action: "Chỉnh sửa Consent",
+    actionType: "update",
+    target: 'Consent "Thu thập thông tin cá nhân"',
+    ip: "192.168.1.30"
+  },
+  {
+    time: "11/12/2025 11:20",
+    user: "Hoàng Văn Tùng",
+    action: "Xóa người dùng",
+    actionType: "delete",
+    target: "User: nguyenvana@gmail.com",
+    ip: "192.168.1.35"
+  },
+  {
+    time: "11/12/2025 09:15",
+    user: "Đỗ Thị Lan",
+    action: "Đăng xuất hệ thống",
+    actionType: "login",
+    target: "Admin Dashboard",
+    ip: "192.168.1.40"
+  },
+  {
+    time: "10/12/2025 17:30",
+    user: "Vũ Văn Hải",
+    action: "Tạo Policy mới",
+    actionType: "create",
+    target: "Privacy Policy v1.1",
+    ip: "192.168.1.45"
+  },
+  {
+    time: "10/12/2025 13:45",
+    user: "Bùi Thị Mai",
+    action: "Cập nhật thống kê",
+    actionType: "update",
+    target: "Dashboard Statistics",
+    ip: "192.168.1.50"
+  },
+  {
+    time: "09/12/2025 10:20",
+    user: "Lý Văn Hùng",
+    action: "Xem log hệ thống",
+    actionType: "view",
+    target: "System Logs",
+    ip: "192.168.1.55"
+  },
+  {
+    time: "09/12/2025 08:45",
+    user: "Đinh Thị Thu",
+    action: "Kích hoạt Consent",
     actionType: "update",
     target: 'Consent "Sử dụng hình ảnh"',
     ip: "192.168.1.60"
@@ -161,7 +239,7 @@ const logsData = [
   {
     time: "08/12/2025 14:00",
     user: "Trần Văn Bình",
-    action: "Đăng kíkí",
+    action: "Sao lưu dữ liệu",
     actionType: "create",
     target: "System Backup",
     ip: "192.168.1.70"
