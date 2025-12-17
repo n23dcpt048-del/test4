@@ -1,7 +1,7 @@
 # 🎉 CỔNG FESTIVAL SINH VIÊN
 
 ## 1. Chạy thử dự án
-* Mở liên kết: https://github.com/n23dcpt048-del/test4/deployments/github-pages
+* Mở liên kết: [https://github.com/n23dcpt048-del/test4/deployments/github-pages](https://n23dcpt048-del.github.io/test4/)
 * Tài khoản đăng nhập: admin@gmail.com
 * Password: 123456
   
