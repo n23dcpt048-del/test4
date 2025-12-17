@@ -160,7 +160,7 @@ async function startServer() {
           image: 'https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/574564898_1454449043350192_975546984353294738_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_ohc=DbVvXUIpWswQ7kNvwEplIRf&_nc_oc=Adkrhn0-C1Z8GGRP-GsVnV2tzE66XSS4fAYNjXzSkodfHlOMmi59QC3oQnwi-da3Prs&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=buV18m_Nwv2DDvmT51wa3Q&oh=00_AfiKckUAZlbGIFB8aqHoUoTYMy42Oruc4C4zfOFAfVUCmg&oe=692BBE9B',
           status: 'pending',
           channels: ['web'],
-          organizationId: 19
+          organizationId: 20
         },
         // 2 sự kiện ĐÃ DUYỆT
         {
@@ -174,7 +174,7 @@ async function startServer() {
           image: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/545054403_1242826237861546_7230088209638397878_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=BBqxo0nZs88Q7kNvwHOt-r5&_nc_oc=Adn4SmsLuB2HqqYCvvwRynPq2xyQVGwHrQIZn184TfXuuH4RYw2f6l7fTg4CfBFEKZQ&_nc_zt=23&_nc_ht=scontent.fdad3-4.fna&_nc_gid=LWxGyBhPoEnbh4fZYvyB_Q&oh=00_AfgPkXOShQbs2TOAvaanBb81YF18o4FW43VDOmdkmHDaAA&oe=692BCEF6',
           status: 'approved',
           channels: ['web'],
-          organizationId: 20
+          organizationId: 21
         },
         {
           name: 'HCM PTIT MULTIMEDIA 2025',
@@ -184,10 +184,10 @@ async function startServer() {
           registrationDeadline: '2026-11-23T23:59:00',
           location: 'Hội trường 2A08, Học viện Công nghệ Bưu chính Viễn thông – Cơ sở TP.HCM',
           registrationLink: 'https://forms.gle/example-link',
-          image: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/566219856_1231088645726163_5271916207151874176_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=h51wD-vw-BkQ7kNvwHX9X1p&_nc_oc=Adnyv-SpShf0Oh2NXDIiIlKzVvSiP9-Zr0AjcL1PDlR-XwdE-IvEWiFmG-pU3oVHpUc&_nc_zt=23&_nc_ht=scontent.fdad3-4.fna&_nc_gid=8kYYM8rHvcavUSCoL--kCQ&oh=00_AfiiPuJ0eeCTNFK5SmIdSTUd2-zkj3bEVUToDkppaFDwgw&oe=692BC395',
+          image: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/565182686_1231089619059399_2209099145158360001_n.png?stp=dst-jpg_tt6&_nc_cat=102&ccb=1-7&_nc_sid=86c6b0&_nc_ohc=fSRlPDPTAckQ7kNvwEFXjuP&_nc_oc=Adkfk7XG4BJASmlYJX5-fVprXqbM5I-BD42oH3wiNhcFYRvD7f6cFKO17NwtrVLHQzI&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&_nc_gid=tjxsCrUDxAsCREZUg_EsTQ&oh=00_AfmKGmPSDUZUPnFHfnrKcFUv_IBJWDPkRAe0hWOOLx1Afw&oe=69488241',
           status: 'approved',
           channels: ['web', 'facebook', 'zalo'],
-          organizationId: 21
+          organizationId: 18
         }
       ], { ignoreDuplicates: true });
       console.log('SEED 5 SỰ KIỆN MẪU THÀNH CÔNG! (3 chờ duyệt + 2 đã duyệt)');
@@ -271,3 +271,4 @@ app.get('/api/stats', async (req, res) => {
 });
 
 startServer();
+
