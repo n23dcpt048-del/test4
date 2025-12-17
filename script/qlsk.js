@@ -35,15 +35,8 @@ async function loadEvents() {
     const res = await fetch(`${API_BASE}/api/events`);
     if (!res.ok) throw new Error('Server lỗi');
     allEvents = await res.json();
-
-    // Xóa toàn bộ card cũ và thông báo trống cũ
-    ['created', 'waitapproved', 'approved'].forEach(tab => {
-      const wrapper = document.querySelector(`#${tab}-content .event-card`);
-      if (wrapper) wrapper.innerHTML = '';
-      removeEmptyMessage(tab + '-content');
-    });
-
-    // Render lại card
+    // Xóa card cũ
+    document.querySelectorAll('.event-card').forEach(wrapper => wrapper.innerHTML = '');
     allEvents.forEach(event => {
       let tabId = '';
       if (event.status === 'created') tabId = 'created-content';
@@ -51,15 +44,6 @@ async function loadEvents() {
       else if (event.status === 'approved') tabId = 'approved-content';
       if (tabId) renderEventCard(event, tabId);
     });
-
-    // Kiểm tra và hiển thị thông báo trống cho từng tab
-    ['created', 'waitapproved', 'approved'].forEach(tab => {
-      const wrapper = document.querySelector(`#${tab}-content .event-card`);
-      if (wrapper && wrapper.children.length === 0) {
-        showEmptyMessage(tab + '-content', 'Chưa có sự kiện nào');
-      }
-    });
-
     updateTabBadges();
     updateEventStatusBadges();
   } catch (err) {
@@ -72,21 +56,15 @@ async function loadEvents() {
 function renderEventCard(event, tabId) {
   const wrapper = document.querySelector(`#${tabId} .event-card`);
   if (!wrapper) return;
-
-  // Xóa thông báo trống nếu có (vì sắp có card)
-  removeEmptyMessage(tabId);
-
   const card = document.createElement('div');
   card.className = 'content-card';
   card.dataset.id = event.id;
-
   const formatDate = (iso) => {
     if (!iso) return 'Chưa xác định';
     const d = new Date(iso);
     return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
   };
-
-  const orgName = event.organizationName || event.Organization?.name || '-----';
+  const orgName = event.organizationName || event.Organization?.name || '-----'; // FIX: ưu tiên tên lưu sẵn
   const channelsHtml = event.channels?.length > 0
     ? `<div class="displaymxh">
         ${event.channels.includes('web') ? '<div class="mxh"><div class="mxh-web">Web</div></div>' : ''}
@@ -94,7 +72,6 @@ function renderEventCard(event, tabId) {
         ${event.channels.includes('zalo') ? '<div class="zalo"><div class="zalo-content">Zalo</div></div>' : ''}
        </div>`
     : '<div class="mxh"><div class="mxh-web">Web</div></div>';
-
   let buttonsHtml = '';
   if (event.status === 'created') {
     buttonsHtml = `
@@ -107,7 +84,6 @@ function renderEventCard(event, tabId) {
   } else if (event.status === 'approved') {
     buttonsHtml = `<div class="button-container"><button class="delete-btn" data-id="${event.id}">Xóa</button></div>`;
   }
-
   card.innerHTML = `
     <div class="content-image">
       <img src="${event.image || 'https://via.placeholder.com/400x250/f0f0f0/999?text=No+Image'}" alt="${event.name}">
@@ -127,55 +103,6 @@ function renderEventCard(event, tabId) {
     </div>
   `;
   wrapper.appendChild(card);
-}
-
-// Hàm hiển thị thông báo trống trong tab
-function showEmptyMessage(tabContentId, message) {
-  const content = document.getElementById(tabContentId);
-  if (!content) return;
-
-  // Tránh tạo nhiều lần
-  if (content.querySelector('.empty-message')) return;
-
-  const div = document.createElement('div');
-  div.className = 'empty-message';
-  div.innerHTML = `<p style="text-align:center; color:#999; padding:40px 20px; font-size:16px;">${message}</p>`;
-  // Chèn trước .event-card
-  const wrapper = content.querySelector('.event-card');
-  if (wrapper) {
-    content.insertBefore(div, wrapper);
-  } else {
-    content.appendChild(div);
-  }
-}
-
-// Hàm xóa thông báo trống
-function removeEmptyMessage(tabContentId) {
-  const content = document.getElementById(tabContentId);
-  if (!content) return;
-  const msg = content.querySelector('.empty-message');
-  if (msg) msg.remove();
-}
-
-// Hàm kiểm tra và hiển thị thông báo khi search không có kết quả
-function checkSearchEmpty() {
-  const visibleCards = document.querySelectorAll('.content-card:not(.hidden-search)');
-  const activeTabContent = document.querySelector('.tab-content.active');
-  if (!activeTabContent) return;
-
-  removeSearchEmptyMessage();
-
-  if (visibleCards.length === 0 && document.getElementById('searchInput').value.trim() !== '') {
-    const div = document.createElement('div');
-    div.className = 'empty-message search-empty';
-    div.innerHTML = `<p style="text-align:center; color:#999; padding:40px 20px; font-size:16px;">Không tìm thấy sự kiện nào phù hợp</p>`;
-    activeTabContent.appendChild(div);
-  }
-}
-
-// Xóa thông báo search trống
-function removeSearchEmptyMessage() {
-  document.querySelectorAll('.search-empty').forEach(el => el.remove());
 }
 
 // ==================== BACKEND FUNCTIONS ====================
@@ -331,7 +258,6 @@ function closeViewModal() {
   document.body.style.overflow = 'auto';
 }
 
-
 // ==================== UI & EVENTS ====================
 document.addEventListener('DOMContentLoaded', async () => {
   await loadOrganizations();
@@ -344,11 +270,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById(btn.dataset.tab + '-content').classList.add('active');
-
-      // Khi chuyển tab, kiểm tra lại search empty (nếu đang search)
-      checkSearchEmpty();
     });
   });
+
   // Modal tạo
   document.getElementById('openModalBtn').addEventListener('click', () => {
     document.getElementById('modalOverlay').classList.add('active');
@@ -420,28 +344,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (seeBtn) openViewModal(seeBtn.dataset.id);
   });
 
- // Search – đã chỉnh để có thông báo không tìm thấy
+  // Search
   document.getElementById('searchInput').addEventListener('input', e => {
     const term = e.target.value.toLowerCase().trim();
-    if (!term) {
-      document.querySelectorAll('.content-card').forEach(card => card.classList.remove('hidden-search'));
-      removeSearchEmptyMessage();
-      return;
-    }
-
-    let hasResult = false;
-    document.querySelectorAll('.content-card').forEach(card => {
-      const name = card.querySelector('.date p')?.textContent.toLowerCase() || '';
-      const org = card.querySelector('.event-info p:nth-child(5)')?.textContent.toLowerCase() || '';
-      if (name.includes(term) || org.includes(term)) {
-        card.classList.remove('hidden-search');
-        hasResult = true;
-      } else {
-        card.classList.add('hidden-search');
-      }
-    });
-
-    checkSearchEmpty(); // hiển thị thông báo nếu không có kết quả
+    searchEvents(term);
   });
 
   updateTabBadges();
@@ -456,6 +362,43 @@ function updateTabBadges() {
     if (badge) badge.textContent = `(${count})`;
   });
 }
+
+function updateEventStatusBadges() {
+  const now = new Date();
+  document.querySelectorAll('.content-card').forEach(card => {
+    const p = Array.from(card.querySelectorAll('.event-info p')).find(p => p.textContent.includes('📅 Hạn đăng ký:'));
+    if (!p) return;
+    const text = p.textContent.match(/(\d{2}\/\d{2}\/\d{4})/);
+    if (!text) return;
+    const [dd, mm, yyyy] = text[1].split('/');
+    const deadline = new Date(`${yyyy}-${mm}-${dd}T23:59:59`);
+    const badge = card.querySelector('.status-badge');
+    if (deadline >= now) {
+      badge.textContent = 'Còn hạn';
+      badge.className = 'status-badge approved';
+    } else {
+      badge.textContent = 'Hết hạn';
+      badge.className = 'status-badge disapproved';
+    }
+  });
+}
+
+function searchEvents(term) {
+  if (!term) {
+    document.querySelectorAll('.content-card').forEach(card => card.classList.remove('hidden-search'));
+    return;
+  }
+  document.querySelectorAll('.content-card').forEach(card => {
+    const name = card.querySelector('.date p')?.textContent.toLowerCase() || '';
+    const org = card.querySelector('.event-info p:nth-child(5)')?.textContent.toLowerCase() || '';
+    if (name.includes(term) || org.includes(term)) {
+      card.classList.remove('hidden-search');
+    } else {
+      card.classList.add('hidden-search');
+    }
+  });
+}
+
 // LOGOUT
 document.querySelector('.logout-btn')?.addEventListener('click', () => {
   localStorage.clear();
