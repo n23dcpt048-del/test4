@@ -327,78 +327,34 @@ function savePolicy() {
 
 function previewPolicy() {
   const content = document.getElementById("privacyPolicy").value;
-  
-  // Tạo modal container
-  const modalOverlay = document.createElement("div");
-  modalOverlay.className = "modal-overlay";
-  modalOverlay.style.cssText = `
+
+  const modal = document.createElement("div");
+  modal.style.cssText = `
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
+    inset: 0;
+    background: rgba(0,0,0,.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
     padding: 20px;
   `;
-  
-  // Tạo modal content
-  const modalContent = document.createElement("div");
-  modalContent.className = "modal-content";
-  modalContent.style.cssText = `
-    background: #fff;
-    width: 90%;
-    max-width: 800px;
-    max-height: 90%;
-    overflow: auto;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    position: relative;
-  `;
-  
-  // Thêm nội dung
-  modalContent.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2 style="margin: 0; color: #2c3e50;">Xem trước Chính sách quyền riêng tư</h2>
-      <button class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">×</button>
-    </div>
-    <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; border: 1px solid #dee2e6; margin-bottom: 20px;">
-      <pre style="white-space: pre-wrap; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; margin: 0; font-size: 15px; max-height: 400px; overflow-y: auto;">${content}</pre>
-    </div>
-    <div style="text-align: right;">
-      <button class="btn btn-primary close-btn">Đóng</button>
+
+  modal.innerHTML = `
+    <div style="background: #fff; width: 90%; max-width: 800px; max-height: 90%; overflow: auto; padding: 30px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; color: #2c3e50;">Xem trước Chính sách quyền riêng tư</h2>
+        <button onclick="this.closest('div').parentNode.remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">×</button>
+      </div>
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; border: 1px solid #dee2e6;">
+        <pre style="white-space: pre-wrap; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; margin: 0; font-size: 15px;">${content}</pre>
+      </div>
+      <div style="margin-top: 20px; text-align: right;">
+        <button onclick="this.closest('div').parentNode.remove()" class="btn btn-primary">Đóng</button>
+      </div>
     </div>
   `;
-  
-  // Gắn các phần tử
-  modalOverlay.appendChild(modalContent);
-  document.body.appendChild(modalOverlay);
-  
-  // Thêm sự kiện đóng modal
-  const closeBtns = modalOverlay.querySelectorAll('.close-btn');
-  closeBtns.forEach(btn => {
-    btn.addEventListener('click', () => modalOverlay.remove());
-  });
-  
-  // Đóng khi click ra ngoài modal content
-  modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) {
-      modalOverlay.remove();
-    }
-  });
-  
-  // Đóng bằng phím ESC
-  const handleEsc = (e) => {
-    if (e.key === 'Escape') {
-      modalOverlay.remove();
-      document.removeEventListener('keydown', handleEsc);
-    }
-  };
-  document.addEventListener('keydown', handleEsc);
+  document.body.appendChild(modal);
 }
 
 /***********************
