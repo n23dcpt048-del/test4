@@ -1,6 +1,11 @@
 # 🎉 CỔNG FESTIVAL SINH VIÊN
 
-## 1. Giới thiệu chung
+## 1. Chạy thử dự án
+* Mở liên kết: https://github.com/n23dcpt048-del/test4/deployments/github-pages
+* Tài khoản đăng nhập: admin@gmail.com
+* Password: 123456
+  
+## 2. Giới thiệu chung
 
 **Cổng Festival Sinh Viên** là một nền tảng Web App truyền thông đa phương tiện, được xây dựng nhằm quản lý, quảng bá và vận hành các sự kiện festival, ngày hội, chương trình dành cho sinh viên. Hệ thống hỗ trợ xuất bản nội dung đa kênh, quản lý người dùng, sự kiện, dữ liệu truyền thông và đặc biệt chú trọng đến **quyền riêng tư & tuân thủ dữ liệu cá nhân**.
 
@@ -12,7 +17,7 @@ Dự án hướng đến các đối tượng:
 
 ---
 
-## 2. Mục tiêu hệ thống
+## 3. Mục tiêu hệ thống
 
 * Xây dựng Web App quản trị festival sinh viên tập trung, quản lý toàn bộ vòng đời sự kiện.
 * Tự động hóa truyền thông đa kênh (Web, mạng xã hội), hỗ trợ livestream và clip ngắn.
@@ -21,9 +26,9 @@ Dự án hướng đến các đối tượng:
 
 ---
 
-## 3. Các phân hệ chính
+## 4. Các phân hệ chính
 
-### 3.1. Trang người dùng (Client)
+### 4.1. Trang người dùng (Client)
 
 * **Xem và theo dõi thông tin** sự kiện festival
 * Xem nội dung truyền thông (ảnh, bài viết)
@@ -33,16 +38,16 @@ Dự án hướng đến các đối tượng:
 
 ---
 
-## 4. Phân hệ Quyền riêng tư & Tuân thủ
+## 5. Phân hệ Quyền riêng tư & Tuân thủ
 
-### 4.1. Quản lý Chính sách Quyền riêng tư
+### 5.1. Quản lý Chính sách Quyền riêng tư
 
 * Tạo mới, chỉnh sửa nội dung chính sách
 * Quản lý phiên bản chính sách
 * Lưu lịch sử thay đổi (ai sửa, thời gian, nội dung)
 * Yêu cầu người dùng đồng ý lại khi chính sách cập nhật
 
-### 4.2. Quản lý Sự đồng ý (Consent Management)
+### 5.2. Quản lý Sự đồng ý (Consent Management)
 
 * Thu thập sự đồng ý cho:
 
@@ -52,7 +57,7 @@ Dự án hướng đến các đối tượng:
 * Theo dõi trạng thái: Đã đồng ý / Từ chối / Chưa phản hồi
 * Ghi nhận thời gian và phiên bản chính sách đã đồng ý
 
-### 4.3. Nhật ký & kiểm toán (Logs)
+### 5.3. Nhật ký & kiểm toán (Logs)
 
 * Ghi lại các hành động quan trọng:
 
@@ -63,16 +68,16 @@ Dự án hướng đến các đối tượng:
 
 ---
 
-## 5. Công nghệ sử dụng
+## 6. Công nghệ sử dụng
 
 * **Frontend**: HTML5, CSS3, JavaScript
 * **Backend**: (mô phỏng / mở rộng theo yêu cầu môn học)
-* **Cơ sở dữ liệu**: MySQL / JSON demo
+* **Cơ sở dữ liệu**:PostgreSQL (managed bằng Render.com)
 * **Khác**: API mạng xã hội (Facebook, Zalo, TikTok – mô phỏng)
 
 ---
 
-## 6. Định hướng phát triển
+## 7. Định hướng phát triển
 
 * Tích hợp đăng nhập SSO (Google, Facebook)
 * Áp dụng chuẩn bảo mật dữ liệu nâng cao
@@ -81,7 +86,7 @@ Dự án hướng đến các đối tượng:
 
 ---
 
-## 7. Thông tin dự án
+## 8. Thông tin dự án
 
 * **Tên đề tài**: Cổng sự kiện Festival Sinh Viên
 * **Loại dự án**: Web App quản trị & truyền thông đa phương tiện
